@@ -1,4 +1,13 @@
 # Goods Exchange Application
+## Figma Design:
+
+  [CLick to view design on Figma](https://www.figma.com/design/2SKsAcz8u7xTsFJcac36Cz/GoodExchange)
+
+
+## ERD version 1: 
+<br>
+
+![System Diagram](https://github.com/UTH-group/Goods_Exchange_Application/blob/main/model_picture_1.png?raw=true)
 
 Welcome to the Goods Exchange Application, a comprehensive platform designed for both mobile and web users. Our application facilitates a dynamic marketplace where buyers and sellers can interact securely under a well-monitored system. Below, you'll find a description of the various user roles and their permissions within the application.
 
