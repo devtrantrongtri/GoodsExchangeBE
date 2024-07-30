@@ -27,7 +27,7 @@ public class Notifications {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<User> users = new HashSet<User>();
+    private User users ;
 
     @Column(name = "message", nullable = false)
     private String message;
