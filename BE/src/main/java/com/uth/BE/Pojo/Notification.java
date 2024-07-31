@@ -34,7 +34,7 @@ public class Notification {
     @Column(name = "is_read")
     private boolean is_read = false;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "create_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp created_at;
