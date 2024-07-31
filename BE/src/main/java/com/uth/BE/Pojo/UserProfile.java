@@ -1,5 +1,6 @@
 package com.uth.BE.Pojo;
 
+import com.uth.BE.Pojo.model.FileExtension;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -20,9 +21,20 @@ public class UserProfile {
     @Lob
     private String bio;
 
+    public FileExtension getFile_extension() {
+        return file_extension;
+    }
+
+    public void setFile_extension(FileExtension file_extension) {
+        this.file_extension = file_extension;
+    }
+
     @Column(name = "profile_image_url")
     @Lob
     private String profileImageUrl;
+
+    @Column(name = "file_extension")
+    private FileExtension file_extension;
 
     @Column(name = "created_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)

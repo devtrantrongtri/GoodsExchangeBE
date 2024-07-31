@@ -4,9 +4,10 @@ spring :
     url: "jdbc:mysql://localhost:3308/GoodsExchange"
     username: root
     password : 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+#        dialect: org.hibernate.dialect.MySQLDialect
