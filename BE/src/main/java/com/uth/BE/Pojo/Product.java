@@ -31,7 +31,7 @@ public class Product {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
-    private Categories category;
+    private Categorie category;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -80,11 +80,11 @@ public class Product {
         this.seller = seller;
     }
 
-    public Categories getCategory() {
+    public Categorie getCategory() {
         return category;
     }
 
-    public void setCategory(Categories category) {
+    public void setCategory(Categorie category) {
         this.category = category;
     }
 

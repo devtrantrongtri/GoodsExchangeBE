@@ -1,9 +1,7 @@
 package com.uth.BE.Pojo;
 
-import java.sql.Timestamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.CascadeType;
@@ -11,37 +9,42 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "comments")
-public class Comments {
+@Table(name = "notifications")
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "comment_id")
-    private int comment_id;
+    @Column(name = "notification_id")
+    private int notification_id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name="user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User users ;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "message", nullable = false)
+    private String message;
 
-    @Column(name = "comment_text", columnDefinition = "TEXT", nullable = false)
-    private String comment_text;
+    @Column(name = "is_read")
+    private boolean is_read = false;
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "create_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp created_at;
 
-    public Comments () {
+    public Notification() {
         super();
     }
 
-    public Comments(String comment_text) {
+    public Notification(String message) {
         super();
-        this.comment_text = comment_text;
+        this.message = message;
     }
 }

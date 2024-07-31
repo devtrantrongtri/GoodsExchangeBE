@@ -16,7 +16,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name="reports")
-public class Reports {
+public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="report_id")
@@ -44,11 +44,11 @@ public class Reports {
     @CreationTimestamp
     private Timestamp report_date;
 
-    public Reports() {
+    public Report() {
         super();
     }
 
-    public Reports( String report_reason) {
+    public Report(String report_reason) {
         super();
         this.report_reason = report_reason;
     }

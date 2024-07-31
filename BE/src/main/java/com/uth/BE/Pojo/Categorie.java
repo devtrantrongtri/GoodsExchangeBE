@@ -1,4 +1,4 @@
 package com.uth.BE.Pojo;
 
-public class Categories {
+public class Categorie {
 }

@@ -19,7 +19,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "reviews")
-public class Reviews {
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "comment_id")
@@ -48,11 +48,11 @@ public class Reviews {
     @Column(nullable = false, columnDefinition = "ENUM('pending', 'resolved', 'dismissed') DEFAULT 'pending'")
     private StatusReview status = StatusReview.PENDING;
 
-    public Reviews() {
+    public Review() {
         super();
 
     }
-    public Reviews(String review_text) {
+    public Review(String review_text) {
         super();
         this.review_text = review_text;
     }
