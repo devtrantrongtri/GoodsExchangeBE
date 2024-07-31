@@ -24,11 +24,11 @@ public class Reports {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private int user;
+    private User user;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
-    private int product;
+    private Product  product;
 
     @Column(name="report_title",columnDefinition = "TEXT", nullable = false)
     private String report_title;

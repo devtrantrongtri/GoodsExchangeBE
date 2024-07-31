@@ -2,6 +2,7 @@ package com.uth.BE.Pojo;
 
 import java.sql.Timestamp;
 
+import com.uth.BE.Pojo.model.StatusReview;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,11 +27,11 @@ public class Reviews {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private int user;
+    private User user;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
-    private int product;
+    private Product product;
 
     @Column(name="rating",nullable=false)
     private int rating;
@@ -45,7 +46,7 @@ public class Reviews {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "ENUM('pending', 'resolved', 'dismissed') DEFAULT 'pending'")
-    private Status status = Status.PENDING;
+    private StatusReview status = StatusReview.PENDING;
 
     public Reviews() {
         super();
@@ -55,9 +56,5 @@ public class Reviews {
         super();
         this.review_text = review_text;
     }
-    public enum Status {
-        PENDING,
-        RESOLVED,
-        DISMISSED
-    }
+
 }

@@ -1,5 +1,6 @@
 package com.uth.BE.Pojo;
 
+import com.uth.BE.Pojo.model.Role;
 import jakarta.persistence.*;
 
 import java.util.Date;

@@ -22,11 +22,11 @@ public class Comments {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
-    private int product;
+    private Product product;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private int user;
+    private User user;
 
     @Column(name = "comment_text", columnDefinition = "TEXT", nullable = false)
     private String comment_text;
