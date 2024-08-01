@@ -52,5 +52,61 @@ public class Report {
         super();
         this.report_reason = report_reason;
     }
+
+    public int getReport_id() {
+        return report_id;
+    }
+
+    public void setReport_id(int report_id) {
+        this.report_id = report_id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public String getReport_title() {
+        return report_title;
+    }
+
+    public void setReport_title(String report_title) {
+        this.report_title = report_title;
+    }
+
+    public String getReport_reason() {
+        return report_reason;
+    }
+
+    public void setReport_reason(String report_reason) {
+        this.report_reason = report_reason;
+    }
+
+    public String getReport_img() {
+        return report_img;
+    }
+
+    public void setReport_img(String report_img) {
+        this.report_img = report_img;
+    }
+
+    public Timestamp getReport_date() {
+        return report_date;
+    }
+
+    public void setReport_date(Timestamp report_date) {
+        this.report_date = report_date;
+    }
 }
 
