@@ -44,4 +44,44 @@ public class Comment {
         super();
         this.comment_text = comment_text;
     }
+
+    public int getCommentId() {
+        return comment_id;
+    }
+
+    public void setCommentId(int comment_id) {
+        this.comment_id = comment_id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getCommentText() {
+        return comment_text;
+    }
+
+    public void setCommentText(String comment_text) {
+        this.comment_text = comment_text;
+    }
+
+    public Timestamp getCreatedAt() {
+        return created_at;
+    }
+
+    public void setCreatedAt(Timestamp created_at) {
+        this.created_at = created_at;
+    }
 }

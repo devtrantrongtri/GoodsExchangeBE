@@ -47,4 +47,44 @@ public class Notification {
         super();
         this.message = message;
     }
+
+    public int getNotificationId() {
+        return notification_id;
+    }
+
+    public void setNotificationId(int notification_id) {
+        this.notification_id = notification_id;
+    }
+
+    public User getUser() {
+        return users;
+    }
+
+    public void setUser(User user) {
+        this.users = user;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean isRead() {
+        return is_read;
+    }
+
+    public void setRead(boolean is_read) {
+        this.is_read = is_read;
+    }
+
+    public Timestamp getCreatedAt() {
+        return created_at;
+    }
+
+    public void setCreatedAt(Timestamp created_at) {
+        this.created_at = created_at;
+    }
 }
