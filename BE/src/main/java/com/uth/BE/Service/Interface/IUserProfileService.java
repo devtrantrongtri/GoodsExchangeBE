@@ -1,4 +1,4 @@
 package com.uth.BE.Service.Interface;
 
-public class IUsersService {
+public interface IUserProfileService {
 }
