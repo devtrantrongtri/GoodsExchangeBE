@@ -6,6 +6,7 @@ import com.uth.BE.Service.Interface.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,5 +39,14 @@ public class NotificationService implements INotificationService {
     @Override
     public void delete(int id){
         repo.deleteById(id);
+    }
+
+    @Override
+    public Notification update(Notification notification) {
+        Notification exiting = repo.findById(notification.getNotificationId()).orElse(null);
+        exiting.setMessage(notification.getMessage());
+        exiting.setRead(notification.isRead());
+        exiting.setCreatedAt(new Timestamp(notification.getCreatedAt().getTime()));
+        return repo.save(exiting);
     }
 }

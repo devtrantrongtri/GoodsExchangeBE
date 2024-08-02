@@ -6,6 +6,7 @@ import com.uth.BE.Service.Interface.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,5 +39,13 @@ public class CommentService implements ICommentService {
     @Override
     public void delete(int id){
         repo.deleteById(id);
+    }
+
+    @Override
+    public Comment update(Comment comment) {
+        Comment exiting = repo.findById(comment.getCommentId()).orElse(null);
+        exiting.setCommentText(comment.getCommentText());
+        exiting.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        return repo.save(exiting);
     }
 }

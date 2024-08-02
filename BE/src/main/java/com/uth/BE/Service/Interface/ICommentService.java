@@ -13,4 +13,6 @@ public interface ICommentService {
     public Optional<Comment> findById(int id);
 
     public void delete(int id);
+
+    public Comment update(Comment comment);
 }

@@ -13,4 +13,6 @@ public interface INotificationService {
     public Optional<Notification> findById(int id);
 
     public void delete(int id);
+
+    public Notification update(Notification notification);
 }
