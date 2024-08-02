@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserProfileService  implements IUserProfileService {
+public class UserProfileService implements IUserProfileService {
     private final UserProfileRepository userProfileRepository;
 
     @Autowired
@@ -20,26 +20,53 @@ public class UserProfileService  implements IUserProfileService {
 
     @Override
     public Optional<UserProfile> getUserProfileById(int id) {
-        return userProfileRepository.getUserProfileById(id);
+        try {
+            return userProfileRepository.findById(id);
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while fetching user profile by ID: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public List<UserProfile> getAllUserProfileById(int id) {
-        return userProfileRepository.getAllUserProfileById(id);
+    public List<UserProfile> getAllUserProfile() {
+        try {
+            return userProfileRepository.findAll();
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while fetching all user profiles: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
     public void addUserProfile(UserProfile userProfile) {
-         userProfileRepository.addUserProfile(userProfile);
+        try {
+            userProfileRepository.save(userProfile);
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while adding user profile: " + e.getMessage());
+        }
     }
 
     @Override
     public void updateUserProfile(UserProfile userProfile) {
-        userProfileRepository.updateUserProfile(userProfile);
+        try {
+            userProfileRepository.save(userProfile);
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while updating user profile: " + e.getMessage());
+        }
     }
 
     @Override
     public void deleteUserProfile(int id) {
-        userProfileRepository.deleteUserProfile(id);
+        try {
+            userProfileRepository.deleteById(id);
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while deleting user profile: " + e.getMessage());
+        }
     }
 }

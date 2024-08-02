@@ -14,31 +14,59 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepos) {
-        this.userRepository = userRepos;
-    }
-    @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Optional<User> findById(int id) {
-        return userRepository.findById(id);
+    public List<User> getALLUser() {
+        try {
+            return userRepository.findAll();
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while fetching all users: " + e.getMessage());
+            return null; // Chỗ này sẽ update thành một kiểu trả về. sẽ update sau.
+        }
     }
 
     @Override
-    public void save(User user) {
-        userRepository.save(user);
+    public Optional<User> getUserById(int id) {
+        try {
+            return userRepository.findById(id);
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while fetching user by ID: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override
-    public void deleteById(int id) {
-        userRepository.deleteById(id);
+    public void createUser(User user) {
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while creating user: " + e.getMessage());
+        }
     }
 
     @Override
-    public void update(User user) {
-        userRepository.update(user);
+    public void deleteUserById(int id) {
+        try {
+            userRepository.deleteById(id);
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while deleting user: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateUser(User user) {
+        try {
+            userRepository.save(user);
+        } catch (Exception e) {
+            // Log the exception and handle it as necessary
+            System.err.println("Error occurred while updating user: " + e.getMessage());
+        }
     }
 }
