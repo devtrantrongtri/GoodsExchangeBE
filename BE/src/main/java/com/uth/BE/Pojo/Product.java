@@ -31,7 +31,7 @@ public class Product {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
-    private Categorie category;
+    private Category category;
 
     @Column(name = "title", nullable = false)
     private String title;
