@@ -1,6 +1,6 @@
 package com.uth.BE.Controller;
 
-import com.uth.BE.Pojo.Comment;
+import com.uth.BE.Entity.Comment;
 import com.uth.BE.Service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

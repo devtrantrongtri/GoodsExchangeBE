@@ -1,6 +1,6 @@
 package com.uth.BE.Service.Interface;
 
-import com.uth.BE.Pojo.Product;
+import com.uth.BE.Entity.Product;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.uth.BE.Service.Interface;
 
-import com.uth.BE.Pojo.Review;
+import com.uth.BE.Entity.Review;
 
 import java.util.List;
 import java.util.Optional;

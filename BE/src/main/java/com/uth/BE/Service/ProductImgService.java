@@ -1,6 +1,6 @@
 package com.uth.BE.Service;
 
-import com.uth.BE.Pojo.ProductImg;
+import com.uth.BE.Entity.ProductImg;
 import com.uth.BE.Repository.ProductImgRepository;
 import com.uth.BE.Service.Interface.IProductImgService;
 import org.springframework.beans.factory.annotation.Autowired;

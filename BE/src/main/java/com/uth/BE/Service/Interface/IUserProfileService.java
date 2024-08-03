@@ -1,6 +1,6 @@
 package com.uth.BE.Service.Interface;
 
-import com.uth.BE.Pojo.UserProfile;
+import com.uth.BE.Entity.UserProfile;
 
 import java.util.List;
 import java.util.Optional;

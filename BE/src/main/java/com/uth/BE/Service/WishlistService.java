@@ -1,17 +1,13 @@
 package com.uth.BE.Service;
 
-import com.uth.BE.Pojo.Product;
-import com.uth.BE.Pojo.WishList;
+import com.uth.BE.Entity.WishList;
 import com.uth.BE.Repository.ProductRepository;
 import com.uth.BE.Repository.WishlistRepository;
 import com.uth.BE.Service.Interface.IWishlistService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class WishlistService implements IWishlistService {

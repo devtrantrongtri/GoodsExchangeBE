@@ -1,7 +1,7 @@
 package com.uth.BE.Controller;
 
 
-import com.uth.BE.Pojo.Report;
+import com.uth.BE.Entity.Report;
 import com.uth.BE.Service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

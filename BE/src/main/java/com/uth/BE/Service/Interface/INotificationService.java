@@ -1,6 +1,6 @@
 package com.uth.BE.Service.Interface;
 
-import com.uth.BE.Pojo.Notification;
+import com.uth.BE.Entity.Notification;
 
 import java.util.List;
 import java.util.Optional;

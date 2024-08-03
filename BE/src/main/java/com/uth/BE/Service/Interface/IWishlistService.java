@@ -1,10 +1,8 @@
 package com.uth.BE.Service.Interface;
 
-import com.uth.BE.Pojo.Product;
-import com.uth.BE.Pojo.WishList;
+import com.uth.BE.Entity.WishList;
 
 import java.util.Optional;
-import java.util.Set;
 
 public interface IWishlistService {
     public WishList save(WishList wishList);

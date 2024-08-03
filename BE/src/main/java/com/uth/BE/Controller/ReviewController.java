@@ -1,6 +1,6 @@
 package com.uth.BE.Controller;
 
-import com.uth.BE.Pojo.Review;
+import com.uth.BE.Entity.Review;
 import com.uth.BE.Service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

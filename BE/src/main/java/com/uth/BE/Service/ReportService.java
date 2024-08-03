@@ -1,7 +1,6 @@
 package com.uth.BE.Service;
 
-import com.uth.BE.Pojo.Report;
-import com.uth.BE.Pojo.Review;
+import com.uth.BE.Entity.Report;
 import com.uth.BE.Service.Interface.IReportService;
 import com.uth.BE.Repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;

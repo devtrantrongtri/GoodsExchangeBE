@@ -1,7 +1,7 @@
 package com.uth.BE.Service;
 
 
-import com.uth.BE.Pojo.Review;
+import com.uth.BE.Entity.Review;
 import com.uth.BE.Repository.ReviewRepository;
 import com.uth.BE.Service.Interface.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;

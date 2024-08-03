@@ -1,6 +1,6 @@
 package com.uth.BE.Controller;
 
-import com.uth.BE.Pojo.Notification;
+import com.uth.BE.Entity.Notification;
 import com.uth.BE.Service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

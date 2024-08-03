@@ -1,6 +1,6 @@
 package com.uth.BE.Service.Interface;
 
-import com.uth.BE.Pojo.Comment;
+import com.uth.BE.Entity.Comment;
 
 import java.util.List;
 import java.util.Optional;

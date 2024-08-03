@@ -1,6 +1,6 @@
 package com.uth.BE.Controller;
 
-import com.uth.BE.Pojo.UserProfile;
+import com.uth.BE.Entity.UserProfile;
 import com.uth.BE.Service.Interface.IUserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

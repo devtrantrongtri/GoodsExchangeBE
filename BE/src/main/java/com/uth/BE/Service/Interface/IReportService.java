@@ -1,6 +1,6 @@
 package com.uth.BE.Service.Interface;
 
-import com.uth.BE.Pojo.Report;
+import com.uth.BE.Entity.Report;
 
 import java.util.List;
 import java.util.Optional;

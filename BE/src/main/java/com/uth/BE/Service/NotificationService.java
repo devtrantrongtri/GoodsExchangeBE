@@ -1,6 +1,6 @@
 package com.uth.BE.Service;
 
-import com.uth.BE.Pojo.Notification;
+import com.uth.BE.Entity.Notification;
 import com.uth.BE.Repository.NotificationRepository;
 import com.uth.BE.Service.Interface.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;

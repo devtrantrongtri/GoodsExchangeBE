@@ -1,6 +1,6 @@
 package com.uth.BE.Repository;
 
-import com.uth.BE.Pojo.ProductImg;
+import com.uth.BE.Entity.ProductImg;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

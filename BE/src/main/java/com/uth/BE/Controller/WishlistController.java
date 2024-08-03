@@ -1,7 +1,6 @@
 package com.uth.BE.Controller;
 
-import com.uth.BE.Pojo.Product;
-import com.uth.BE.Pojo.WishList;
+import com.uth.BE.Entity.WishList;
 import com.uth.BE.Service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

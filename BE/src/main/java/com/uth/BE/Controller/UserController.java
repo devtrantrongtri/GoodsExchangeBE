@@ -1,6 +1,6 @@
 package com.uth.BE.Controller;
 
-import com.uth.BE.Pojo.User;
+import com.uth.BE.Entity.User;
 import com.uth.BE.Service.Interface.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     private final IUserService userService;
@@ -21,7 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getALLUser();
         if (users != null && !users.isEmpty()) {

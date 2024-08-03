@@ -1,6 +1,6 @@
 package com.uth.BE.Service;
 
-import com.uth.BE.Pojo.Category;
+import com.uth.BE.Entity.Category;
 import com.uth.BE.Repository.CategoryRepository;
 import com.uth.BE.Service.Interface.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;

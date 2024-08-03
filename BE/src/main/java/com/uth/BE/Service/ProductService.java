@@ -1,6 +1,6 @@
 package com.uth.BE.Service;
 
-import com.uth.BE.Pojo.Product;
+import com.uth.BE.Entity.Product;
 import com.uth.BE.Repository.ProductRepository;
 import com.uth.BE.Service.Interface.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;

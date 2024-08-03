@@ -1,6 +1,6 @@
 package com.uth.BE.Service.Interface;
 
-import com.uth.BE.Pojo.ProductImg;
+import com.uth.BE.Entity.ProductImg;
 
 import java.util.List;
 import java.util.Optional;

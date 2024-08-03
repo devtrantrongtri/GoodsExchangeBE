@@ -1,6 +1,6 @@
 package com.uth.BE.Service;
 
-import com.uth.BE.Pojo.User;
+import com.uth.BE.Entity.User;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
