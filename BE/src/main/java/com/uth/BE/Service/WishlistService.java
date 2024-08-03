@@ -30,26 +30,26 @@ public class WishlistService implements IWishlistService {
         return repoWl.save(wishList);
     }
 
-    @Transactional
-    @Override
-    public WishList addProduct(Product product, WishList wishList) {
-        Optional<WishList> optionalWishlist = repoWl.findById(wishList.getId());
-        Optional<Product> optionalProduct = repoPr.findById(product.getProduct_id());
+//    @Transactional
+//    @Override
+//    public WishList addProduct(Product product, WishList wishList) {
+//        Optional<WishList> optionalWishlist = repoWl.findById(wishList.getId());
+//        Optional<Product> optionalProduct = repoPr.findById(product.getProduct_id());
+//
+//        if (optionalWishlist.isPresent() && optionalProduct.isPresent()) {
+//            WishList existingWishList = optionalWishlist.get();
+//            Product existingProduct = optionalProduct.get();
+//            existingWishList.getProduct().add(existingProduct);
+//
+//            return repoWl.save(existingWishList);
+//        }
+//        return null;
+//    }
 
-        if (optionalWishlist.isPresent() && optionalProduct.isPresent()) {
-            WishList existingWishList = optionalWishlist.get();
-            Product existingProduct = optionalProduct.get();
-            existingWishList.getProduct().add(existingProduct);
-
-            return repoWl.save(existingWishList);
-        }
-        return null;
-    }
-
-    public Set<Product> findAllProduct(WishList wishList) {
-        Optional<WishList> opWishlist = repoWl.findById(wishList.getId());
-        return opWishlist.map(WishList::getProduct).orElse(null);
-    }
+//    public Set<Product> findAllProduct(WishList wishList) {
+//        Optional<WishList> opWishlist = repoWl.findById(wishList.getId());
+//        return opWishlist.map(WishList::getProduct).orElse(null);
+//    }
 
     public Optional<WishList> findById(int id) {
         return repoWl.findById(id);

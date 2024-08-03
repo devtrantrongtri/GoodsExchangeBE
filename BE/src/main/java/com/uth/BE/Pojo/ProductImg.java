@@ -34,7 +34,7 @@ public class ProductImg {
     @Column(name = "file_extension", nullable = false)
     private FileExtension file_extension;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp created_at;

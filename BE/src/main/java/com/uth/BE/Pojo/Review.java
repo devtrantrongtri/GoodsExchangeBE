@@ -39,7 +39,7 @@ public class Review {
     @Column(name="review_text")
     private String review_text;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "create_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp created_at;

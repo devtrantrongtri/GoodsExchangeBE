@@ -18,10 +18,10 @@ public class WishlistController {
         return wishlistService.save(wishList);
     }
 
-    @PostMapping("/addProduct/")
-    public WishList addProduct(@RequestBody WishList wishList, @RequestBody Product product) {
-        return wishlistService.addProduct(product, wishList);
-    }
+//    @PostMapping("/addProduct/")
+//    public WishList addProduct(@RequestBody WishList wishList, @RequestBody Product product) {
+//        return wishlistService.addProduct(product, wishList);
+//    }
 
     @GetMapping("/findWistlistByID/{id}")
     public Optional<WishList> findWistlistById(@PathVariable int id) {

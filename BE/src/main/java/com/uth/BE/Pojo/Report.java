@@ -39,7 +39,7 @@ public class Report {
     @Column(name = "report_img", columnDefinition = "TEXT", nullable = false)
     private String report_img;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "report_date", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp report_date;

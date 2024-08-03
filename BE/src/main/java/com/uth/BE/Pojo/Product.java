@@ -45,7 +45,7 @@ public class Product {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp created_at;
@@ -80,11 +80,11 @@ public class Product {
         this.seller = seller;
     }
 
-    public Categorie getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(Categorie category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

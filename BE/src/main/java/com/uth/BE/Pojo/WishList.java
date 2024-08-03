@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="wish_list")
+@Table(name = "wish_list")
 public class WishList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,8 +19,10 @@ public class WishList {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @ManyToMany(mappedBy = "products")
-    private Set<Product> product = new HashSet<Product>();
+    //    @ManyToMany(mappedBy = "products")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Column(name = "create_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
@@ -46,11 +48,19 @@ public class WishList {
         this.user = user;
     }
 
-    public Set<Product> getProduct() {
+    //    public Set<Product> getProduct() {
+//        return product;
+//    }
+
+//    public void setProduct(Set<Product> product) {
+//        this.product = product;
+//    }
+
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Set<Product> product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 
