@@ -8,6 +8,7 @@ import com.uth.BE.Service.Interface.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,6 +96,24 @@ public class ProductService implements IProductService {
         } catch (Exception e) {
             System.err.println("Error occurred while searching products by category: " + e.getMessage());
             return null;
+        }
+    }
+
+    public List<Product> searchProductsByTitle(String title) {
+        try {
+            return productRepository.findByTitleContaining(title);
+        } catch (Exception e) {
+            System.err.println("Error occurred while searching products by title: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Product> searchProductsByPrice(BigDecimal minPrice, BigDecimal maxPrice) {
+        try {
+            return productRepository.findByPriceBetween(minPrice, maxPrice);
+        } catch (Exception e) {
+            System.err.println("Error occurred while searching products by price: " + e.getMessage());
+            return new ArrayList<>();
         }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -136,6 +137,36 @@ public class ProductController {
                 }
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/title/{title}")
+    public ResponseEntity<List<Product>> searchProductsByTitle(@PathVariable String title) {
+        try {
+            List<Product> products = productService.searchProductsByTitle(title);
+            if (!products.isEmpty()) {
+                return new ResponseEntity<>(products, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/price")
+    public ResponseEntity<List<Product>> searchProductsByPrice(
+            @RequestParam BigDecimal minPrice,
+            @RequestParam BigDecimal maxPrice) {
+        try {
+            List<Product> products = productService.searchProductsByPrice(minPrice, maxPrice);
+            if (!products.isEmpty()) {
+                return new ResponseEntity<>(products, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
