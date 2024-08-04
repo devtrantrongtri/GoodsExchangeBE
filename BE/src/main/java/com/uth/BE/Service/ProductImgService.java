@@ -11,57 +11,45 @@ import java.util.Optional;
 
 @Service
 public class ProductImgService implements IProductImgService {
-    private final ProductImgRepository productImgRepository;
 
     @Autowired
-    public ProductImgService(ProductImgRepository productImgRepository) {
-        this.productImgRepository = productImgRepository;
+    private ProductImgRepository repo;
+
+    public ProductImgService(ProductImgRepository repo) {
+        super();
+        this.repo = repo;
     }
 
     @Override
-    public List<ProductImg> getAllProductImgs() {
-        try {
-            return productImgRepository.findAll();
-        } catch (Exception e) {
-            System.err.println("Error occurred while fetching all product images: " + e.getMessage());
-            return null;
-        }
+    public ProductImg save(ProductImg productImg) {
+        return repo.save(productImg);
     }
 
     @Override
-    public Optional<ProductImg> getProductImgById(int id) {
-        try {
-            return productImgRepository.findById(id);
-        } catch (Exception e) {
-            System.err.println("Error occurred while fetching product image by ID: " + e.getMessage());
-            return Optional.empty();
-        }
+    public List<ProductImg> findAll() {
+        return repo.findAll();
     }
 
     @Override
-    public void createProductImg(ProductImg productImg) {
-        try {
-            productImgRepository.save(productImg);
-        } catch (Exception e) {
-            System.err.println("Error occurred while creating product image: " + e.getMessage());
-        }
+    public Optional<ProductImg> findById(int id) {
+        return repo.findById(id);
     }
 
     @Override
-    public void deleteProductImgById(int id) {
-        try {
-            productImgRepository.deleteById(id);
-        } catch (Exception e) {
-            System.err.println("Error occurred while deleting product image: " + e.getMessage());
-        }
+    public void delete(int id) {
+        repo.deleteById(id);
     }
 
     @Override
-    public void updateProductImg(ProductImg productImg) {
-        try {
-            productImgRepository.save(productImg);
-        } catch (Exception e) {
-            System.err.println("Error occurred while updating product image: " + e.getMessage());
+    public ProductImg update(ProductImg productImg) {
+        ProductImg existing = repo.findById(productImg.getProductimgId()).orElse(null);
+        if (existing != null) {
+            existing.setImgUrl(productImg.getImgUrl());
+            existing.setTitle(productImg.getTitle());
+            existing.setFileExtension(productImg.getFileExtension());
+            existing.setProduct(productImg.getProduct());
+            return repo.save(existing);
         }
+        return null;
     }
 }

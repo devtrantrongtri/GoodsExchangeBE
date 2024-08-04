@@ -18,8 +18,8 @@ import java.sql.Timestamp;
 public class ProductImg {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private int id;
+    @Column(name = "productimg_id")
+    private int productimg_id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
@@ -34,7 +34,6 @@ public class ProductImg {
     @Column(name = "file_extension", nullable = false)
     private FileExtension file_extension;
 
-//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp created_at;
@@ -50,6 +49,51 @@ public class ProductImg {
         this.file_extension = file_extension;
     }
 
+    public int getProductimgId() {
+        return productimg_id;
+    }
 
+    public void setProductimgId(int productimg_id) {
+        this.productimg_id = productimg_id;
+    }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getImgUrl() {
+        return img_url;
+    }
+
+    public void setImgUrl(String img_url) {
+        this.img_url = img_url;
+    }
+
+    public FileExtension getFileExtension() {
+        return file_extension;
+    }
+
+    public void setFileExtension(FileExtension file_extension) {
+        this.file_extension = file_extension;
+    }
+
+    public Timestamp getCreatedAt() {
+        return created_at;
+    }
+
+    public void setCreatedAt(Timestamp created_at) {
+        this.created_at = created_at;
+    }
 }
