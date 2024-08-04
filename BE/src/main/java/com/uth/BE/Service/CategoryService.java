@@ -72,4 +72,9 @@ public class CategoryService implements ICategoryService {
             System.err.println("Error occurred while deleting category: " + e.getMessage());
         }
     }
+
+    @Override
+    public Category findById(int id) {
+        return categoryRepository.findById(id).orElse(null);
+    }
 }

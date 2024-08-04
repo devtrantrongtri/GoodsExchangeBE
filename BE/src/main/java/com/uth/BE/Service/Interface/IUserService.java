@@ -11,4 +11,5 @@ public interface IUserService {
     public void createUser(User user);
     public void deleteUserById(int id);
     public void updateUser(User user);
+    public Optional<User> findByUsername(String username);
 }

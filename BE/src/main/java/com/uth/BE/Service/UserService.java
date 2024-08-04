@@ -69,4 +69,14 @@ public class UserService implements IUserService {
             System.err.println("Error occurred while updating user: " + e.getMessage());
         }
     }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        try {
+            return userRepository.findByUsername(username);
+        } catch (Exception e) {
+            System.err.println("Error occurred while fetching user by username: " + e.getMessage());
+            return null;
+        }
+    }
 }
