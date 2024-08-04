@@ -126,7 +126,7 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<Product>> searchProductsByCategory(@PathVariable int categoryId) {
         try {
-            Category category = categoryService.findById(categoryId); // Phương thức này cần được định nghĩa trong CategoryService
+            Category category = categoryService.findById(categoryId);
             if (category != null) {
                 List<Product> products = productService.searchProductsByCategory(category);
                 if (!products.isEmpty()) {
