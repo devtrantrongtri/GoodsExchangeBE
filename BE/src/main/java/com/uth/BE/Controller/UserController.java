@@ -5,6 +5,7 @@ import com.uth.BE.Service.CommentService;
 import com.uth.BE.Service.Interface.*;
 import com.uth.BE.Service.NotificationService;
 import com.uth.BE.Service.ReportService;
+import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,76 +42,90 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<User>> getAllUsers() {
+    public GlobalRes<List<User>> getAllUsers() {
         List<User> users = userService.getALLUser();
         if (users != null && !users.isEmpty()) {
-            return new ResponseEntity<>(users, HttpStatus.OK);
+//            return new ResponseEntity<>(users, HttpStatus.OK);
+            return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
         } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success",null);
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable int id) {
+    @GetMapping("/id/{id}")
+    public GlobalRes<Optional<User>> getUserById(@PathVariable int id) {
         Optional<User> user = userService.getUserById(id);
         if (user.isPresent()) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new GlobalRes<>(HttpStatus.OK, "User found", user);
         } else {
-            return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", Optional.empty());
         }
     }
-    @GetMapping("/{username}")
-    public ResponseEntity<Optional<User>> getUserById(@PathVariable String username) {
+
+    @GetMapping("/username/{username}")
+    public GlobalRes<Optional<User>> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
         if (user.isPresent()) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            return new GlobalRes<>(HttpStatus.OK, "User found", user);
         } else {
-            return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", Optional.empty());
         }
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody User user) {
+    public GlobalRes<String> createUser(@RequestBody User user) {
         try {
             userService.createUser(user);
-            return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
+            return new GlobalRes<>(HttpStatus.CREATED, "User created successfully", null);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            return new GlobalRes<>(HttpStatus.CONFLICT, e.getMessage(), null);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to create user", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user", null);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody User user) {
+    public GlobalRes<String> updateUser(@PathVariable int id, @RequestBody User user) {
         try {
             Optional<User> existingUser = userService.getUserById(id);
             if (existingUser.isPresent()) {
-                user.setUserId(existingUser.get().getUserId()); // get all, get detail
-
+                user.setUserId(existingUser.get().getUserId());
                 userService.updateUser(user);
-                return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+                return new GlobalRes<>(HttpStatus.OK, "User updated successfully", null);
             } else {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to update user", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update user", null);
         }
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable int id) {
+    public GlobalRes<String> deleteUser(@PathVariable int id) {
         try {
             Optional<User> existingUser = userService.getUserById(id);
             if (existingUser.isPresent()) {
                 userService.deleteUserById(id);
-
-                return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+                return new GlobalRes<>(HttpStatus.OK, "User deleted successfully", null);
             } else {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to delete user", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete user", null);
+        }
+    }
+
+    @DeleteMapping()
+    public GlobalRes<String> deleteAllUser() {
+        try {
+            userService.deleteAllUser();
+            return new GlobalRes<String>( HttpStatus.OK,"success",null);
+        } catch (Exception e) {
+//            return new ResponseEntity<>("Failed to delete user", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<String>( HttpStatus.INTERNAL_SERVER_ERROR,"success",null);
+
         }
     }
 }

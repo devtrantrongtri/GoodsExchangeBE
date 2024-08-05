@@ -2,9 +2,9 @@ package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.UserProfile;
 import com.uth.BE.Service.Interface.IUserProfileService;
+import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,63 +22,63 @@ public class UserProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserProfile>> getAllUserProfiles() {
+    public GlobalRes<List<UserProfile>> getAllUserProfiles() {
         List<UserProfile> profiles = userProfileService.getAllUserProfile();
         if (profiles != null && !profiles.isEmpty()) {
-            return new ResponseEntity<>(profiles, HttpStatus.OK);
+            return new GlobalRes<>(HttpStatus.OK, "UserProfiles found", profiles);
         } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new GlobalRes<>(HttpStatus.NO_CONTENT, "No UserProfiles found", null);
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<UserProfile>> getUserProfileById(@PathVariable int id) {
+    public GlobalRes<Optional<UserProfile>> getUserProfileById(@PathVariable int id) {
         Optional<UserProfile> userProfile = userProfileService.getUserProfileById(id);
         if (userProfile.isPresent()) {
-            return new ResponseEntity<>(userProfile, HttpStatus.OK);
+            return new GlobalRes<>(HttpStatus.OK, "UserProfile found", userProfile);
         } else {
-            return new ResponseEntity<>(Optional.empty(), HttpStatus.NOT_FOUND);
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "UserProfile not found", Optional.empty());
         }
     }
 
     @PostMapping
-    public ResponseEntity<String> addUserProfile(@RequestBody UserProfile userProfile) {
+    public GlobalRes<String> addUserProfile(@RequestBody UserProfile userProfile) {
         try {
             userProfileService.addUserProfile(userProfile);
-            return new ResponseEntity<>("UserProfile created successfully", HttpStatus.CREATED);
+            return new GlobalRes<>(HttpStatus.CREATED, "UserProfile created successfully", null);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to create UserProfile", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create UserProfile", null);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateUserProfile(@PathVariable int id, @RequestBody UserProfile userProfile) {
+    public GlobalRes<String> updateUserProfile(@PathVariable int id, @RequestBody UserProfile userProfile) {
         try {
             Optional<UserProfile> existingUserProfile = userProfileService.getUserProfileById(id);
             if (existingUserProfile.isPresent()) {
                 userProfile.setProfileId(id);
                 userProfileService.updateUserProfile(userProfile);
-                return new ResponseEntity<>("UserProfile updated successfully", HttpStatus.OK);
+                return new GlobalRes<>(HttpStatus.OK, "UserProfile updated successfully", null);
             } else {
-                return new ResponseEntity<>("UserProfile not found", HttpStatus.NOT_FOUND);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "UserProfile not found", null);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to update UserProfile", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update UserProfile", null);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUserProfile(@PathVariable int id) {
+    public GlobalRes<String> deleteUserProfile(@PathVariable int id) {
         try {
             Optional<UserProfile> existingUserProfile = userProfileService.getUserProfileById(id);
             if (existingUserProfile.isPresent()) {
                 userProfileService.deleteUserProfile(id);
-                return new ResponseEntity<>("UserProfile deleted successfully", HttpStatus.OK);
+                return new GlobalRes<>(HttpStatus.OK, "UserProfile deleted successfully", null);
             } else {
-                return new ResponseEntity<>("UserProfile not found", HttpStatus.NOT_FOUND);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "UserProfile not found", null);
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to delete UserProfile", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete UserProfile", null);
         }
     }
 }
