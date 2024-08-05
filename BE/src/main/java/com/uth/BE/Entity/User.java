@@ -22,7 +22,7 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @Column(name = "role")
     private Role role;
 
     @Column(name = "phone_number", length = 15)
@@ -31,9 +31,9 @@ public class User {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "avatar")
-    @Lob
-    private String avatar;
+//    @Column(name = "avatar")
+//    @Lob
+//    private String avatar;
 
     @Column(name = "created_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
@@ -76,8 +76,12 @@ public class User {
         return role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(String role) {
+        try {
+            this.role = Role.valueOf(role.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid role: " + role);
+        }
     }
 
     public String getPhoneNumber() {
@@ -96,13 +100,13 @@ public class User {
         this.address = address;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
+//    public String getAvatar() {
+//        return avatar;
+//    }
+//
+//    public void setAvatar(String avatar) {
+//        this.avatar = avatar;
+//    }
 
     public Date getCreatedAt() {
         return createdAt;

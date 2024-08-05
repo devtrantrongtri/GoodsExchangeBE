@@ -4,6 +4,8 @@ import com.uth.BE.Entity.User;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,13 +45,21 @@ public class UserService implements IUserService {
     @Override
     public void createUser(User user) {
         try {
+            if (userRepository.existsByUsername(user.getUsername())) {
+                // Handle the case when the username already exists
+                throw new IllegalArgumentException("Username already exists");
+            }
             userRepository.save(user);
+        } catch (IllegalArgumentException e) {
+
+            System.err.println("Error: " + e.getMessage());
+            throw e;
         } catch (Exception e) {
-            // Log the exception and handle it as necessary
+
             System.err.println("Error occurred while creating user: " + e.getMessage());
+            throw new RuntimeException("Failed to create user", e);
         }
     }
-
     @Override
     public void deleteUserById(int id) {
         try {
