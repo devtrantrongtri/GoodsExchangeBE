@@ -8,28 +8,34 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "wish_list")
 public class WishList {
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    //    @ManyToMany(mappedBy = "products")
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "create_at", columnDefinition = "TIMESTAMP")
+    @Column(name = "created_at", updatable = false)
     @CreationTimestamp
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
     public WishList() {
         super();
     }
 
+    public WishList(User user, Product product) {
+        this.user = user;
+        this.product = product;
+    }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -46,14 +52,6 @@ public class WishList {
         this.user = user;
     }
 
-    //    public Set<Product> getProduct() {
-//        return product;
-//    }
-
-//    public void setProduct(Set<Product> product) {
-//        this.product = product;
-//    }
-
     public Product getProduct() {
         return product;
     }
@@ -63,10 +61,10 @@ public class WishList {
     }
 
     public Timestamp getCreatedAt() {
-        return created_at;
+        return createdAt;
     }
 
-    public void setCreatedAt(Timestamp created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 }
