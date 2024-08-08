@@ -1,10 +1,10 @@
 package com.uth.BE.Config;
 
-import com.uth.BE.ws.DataHandler;
-import org.springframework.context.annotation.Bean;
+//import com.uth.BE.ws.DataHandler;
+//import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.WebSocketHandler;
+//import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
 
 //@Configuration
@@ -28,13 +28,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 //        WebSocketMessageBrokerConfigurer.super.registerStompEndpoints(registry);
-        registry.addEndpoint("/ws").withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins("*")
+                .setAllowedOrigins("http://localhost:5173")
+                .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic", "/queue");
-        registry.setApplicationDestinationPrefixes("/app");
+        registry.enableSimpleBroker("/topic", "/queue"); // for public or private
+        registry.setApplicationDestinationPrefixes("/app"); // for system controller
+        registry.setUserDestinationPrefix("/user"); // for user
 
 //        WebSocketMessageBrokerConfigurer.super.configureMessageBroker(registry);
 

@@ -27,10 +27,10 @@ public class Channel {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt = new Date();
 
-    @OneToMany(mappedBy = "channels", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
     private Set<ChannelMember> members = new HashSet<>();
 
-    @OneToMany(mappedBy = "channels", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL)
     private Set<Message> messages = new HashSet<>();
 
         // gettter and setter
