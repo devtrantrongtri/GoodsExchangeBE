@@ -5,58 +5,58 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "wish_list_product")
-public class WishListProduct {
+public class wishListProduct {
 
     @EmbeddedId
-    private WishListProductId id;
+    private wishListProductId id;
 
     @ManyToOne
     @MapsId("wishListId")
     @JoinColumn(name = "wish_list_id", nullable = false)
-    private WishList wishList;
+    private wishList wishList;
 
     @ManyToOne
     @MapsId("productId")
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private product product;
 
     @Column(name = "added_at", updatable = false)
     private Timestamp addedAt;
 
     // Constructors
-    public WishListProduct() {
+    public wishListProduct() {
         super();
     }
 
-    public WishListProduct(WishList wishList, Product product, Timestamp addedAt) {
-        this.id = new WishListProductId(wishList.getId(), product.getProductId());
+    public wishListProduct(wishList wishList, product product, Timestamp addedAt) {
+        this.id = new wishListProductId(wishList.getId(), product.getProductId());
         this.wishList = wishList;
         this.product = product;
         this.addedAt = addedAt;
     }
 
     // Getters and Setters
-    public WishListProductId getId() {
+    public wishListProductId getId() {
         return id;
     }
 
-    public void setId(WishListProductId id) {
+    public void setId(wishListProductId id) {
         this.id = id;
     }
 
-    public WishList getWishList() {
+    public wishList getWishList() {
         return wishList;
     }
 
-    public void setWishList(WishList wishList) {
+    public void setWishList(wishList wishList) {
         this.wishList = wishList;
     }
 
-    public Product getProduct() {
+    public product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(product product) {
         this.product = product;
     }
 
@@ -70,7 +70,7 @@ public class WishListProduct {
 }
 
 @Embeddable
-class WishListProductId implements java.io.Serializable {
+class wishListProductId implements java.io.Serializable {
 
     @Column(name = "wish_list_id")
     private int wishListId;
@@ -79,9 +79,9 @@ class WishListProductId implements java.io.Serializable {
     private int productId;
 
     // Constructors
-    public WishListProductId() {}
+    public wishListProductId() {}
 
-    public WishListProductId(int wishListId, int productId) {
+    public wishListProductId(int wishListId, int productId) {
         this.wishListId = wishListId;
         this.productId = productId;
     }
@@ -108,7 +108,7 @@ class WishListProductId implements java.io.Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        WishListProductId that = (WishListProductId) o;
+        wishListProductId that = (wishListProductId) o;
         return wishListId == that.wishListId && productId == that.productId;
     }
 
