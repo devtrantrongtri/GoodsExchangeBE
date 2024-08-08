@@ -1,5 +1,5 @@
 package com.uth.BE.Pojo;
 
-pubclic class WishList.java{
+public class WishList.java{
     
 }
