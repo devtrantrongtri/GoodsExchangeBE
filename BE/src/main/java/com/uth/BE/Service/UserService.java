@@ -43,6 +43,11 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public List<User> findAllUserSent(Integer userid) {
+        return userRepository.findUsersWithMessages(userid);
+    }
+
+    @Override
     public void createUser(User user) {
         try {
             if (userRepository.existsByUsername(user.getUsername())) {

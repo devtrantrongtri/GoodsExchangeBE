@@ -63,6 +63,18 @@ public class UserController {
         }
     }
 
+    @GetMapping("/username/{userId}")
+    public GlobalRes<List<User>> getListUserSentMessage(@PathVariable Integer userId) {
+        List<User> users = userService.findAllUserSent(userId);
+        if (users != null && !users.isEmpty()) {
+//            return new ResponseEntity<>(users, HttpStatus.OK);
+            return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
+        } else {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success",null);
+        }
+    }
+
     @GetMapping("/username/{username}")
     public GlobalRes<Optional<User>> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
