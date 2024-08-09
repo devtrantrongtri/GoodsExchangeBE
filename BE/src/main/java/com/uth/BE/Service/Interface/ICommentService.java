@@ -15,4 +15,8 @@ public interface ICommentService {
     public void delete(int id);
 
     public Comment update(Comment comment);
+
+    public List<Comment> findCommentByUser(int userID);
+
+    public List<Comment> findCommentByProduct(int productD);
 }

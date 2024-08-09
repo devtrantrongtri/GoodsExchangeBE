@@ -32,7 +32,7 @@ public class Comment {
     private String comment_text;
 
 //    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "create_at", columnDefinition = "TIMESTAMP")
+    @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
     private Timestamp created_at;
 
