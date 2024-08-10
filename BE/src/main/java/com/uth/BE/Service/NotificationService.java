@@ -69,7 +69,7 @@ public class NotificationService implements INotificationService {
     public List<Notification> getNotificationByUser(int userID) {
         User u = userRepository.findById(userID).orElse(null);
         if (u != null) {
-            return notificationRepository.findByUser(u);
+            return notificationRepository.findByUsers(u);
         } else {
             return List.of();
         }
@@ -79,7 +79,7 @@ public class NotificationService implements INotificationService {
     public List<Notification> getNotificationByUsername(String username) {
         User u = userRepository.findByUsername(username).orElse(null);
         if (u != null) {
-            return notificationRepository.findByUser(u);
+            return notificationRepository.findByUsers(u);
         } else {
             return List.of();
         }
