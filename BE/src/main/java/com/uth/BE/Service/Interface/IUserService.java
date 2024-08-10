@@ -13,4 +13,5 @@ public interface IUserService {
     public void updateUser(User user);
     public Optional<User> findByUsername(String username);
     public void deleteAllUser();
+    public List<User> findAllUserSent(Integer userid);
 }

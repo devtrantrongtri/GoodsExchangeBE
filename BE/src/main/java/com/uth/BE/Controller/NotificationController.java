@@ -17,10 +17,16 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
+//    @Autowired
+    private final NotificationService notificationService;
+//    @Autowired
+    private final UserService userService;
+
     @Autowired
-    private NotificationService notificationService;
-    @Autowired
-    private UserService userService;
+    public NotificationController(NotificationService notificationService, UserService userService) {
+        this.notificationService = notificationService;
+        this.userService = userService;
+    }
 
     @PostMapping()
     public GlobalRes<NotificationReq> createNotification(@RequestBody NotificationReq notificationReq) {
