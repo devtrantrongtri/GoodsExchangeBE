@@ -31,7 +31,7 @@ public class UserController {
 //        this.commentService = commentService;
 //    }
 
-
+@Autowired
     public UserController(IUserService userService, ICommentService commentService, IWishlistService wishlistService, INotificationService notificationService, IReportService reportService, IProductImgService productImgService) {
         this.userService = userService;
         this.commentService = commentService;
@@ -85,9 +85,10 @@ public class UserController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/sign-up")
     public GlobalRes<String> createUser(@RequestBody User user) {
         try {
+
             userService.createUser(user);
             return new GlobalRes<>(HttpStatus.CREATED, "User created successfully", null);
         } catch (IllegalArgumentException e) {
@@ -96,6 +97,7 @@ public class UserController {
             return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user", null);
         }
     }
+
 
     @PutMapping("/{id}")
     public GlobalRes<String> updateUser(@PathVariable int id, @RequestBody User user) {
