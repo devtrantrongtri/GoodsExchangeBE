@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IUserService {
-    public List<User> getALLUser();
-    public Optional<User> getUserById(int id);
-    public void createUser(User user);
-    public void deleteUserById(int id);
-    public void updateUser(User user);
-    public Optional<User> findByUsername(String username);
-    public void deleteAllUser();
-    public List<User> findAllUserSent(Integer userid);
+    List<User> getALLUser();
+    Optional<User> getUserById(int id);
+    void createUser(User user);
+    void deleteUserById(int id);
+    void updateUser(User user);
+    Optional<User> findByUsername(String username);
+    void deleteAllUser();
+    List<User> findAllUserSent(Integer userid);
 }
