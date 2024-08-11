@@ -22,7 +22,7 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryService.getAllCategory();
+        List<Category> categories = categoryService.getAllCategories();
         if (categories != null && !categories.isEmpty()) {
             return new ResponseEntity<>(categories, HttpStatus.OK);
         } else {
