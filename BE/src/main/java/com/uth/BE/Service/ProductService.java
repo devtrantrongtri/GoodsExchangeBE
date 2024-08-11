@@ -16,7 +16,6 @@ import java.util.Optional;
 @Service
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
-    private List<Product> products = new ArrayList<>();
 
     @Autowired
     public ProductService(ProductRepository productRepository) {

@@ -36,4 +36,12 @@ public class Category {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setCategoryID(int categoryId){
+        this.categoryId = categoryId;
+    }
+
+    public int getCategoryID(){
+        return this.categoryId;
+    }
 }
