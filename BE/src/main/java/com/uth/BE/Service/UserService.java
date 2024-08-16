@@ -6,6 +6,8 @@ import com.uth.BE.Service.Interface.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,9 +53,14 @@ public class UserService implements IUserService {
     public void createUser(User user) {
         try {
             if (userRepository.existsByUsername(user.getUsername())) {
-                // Handle the case when the username already exists
+                // Handle the case when the username and email already exists
                 throw new IllegalArgumentException("Username already exists");
+            } else if (userRepository.existsByEmail(user.getEmail())) {
+                throw new IllegalArgumentException("Email already exists");
             }
+
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10 );
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
         } catch (IllegalArgumentException e) {
 
