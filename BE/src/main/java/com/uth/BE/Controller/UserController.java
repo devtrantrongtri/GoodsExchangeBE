@@ -9,6 +9,7 @@ import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class UserController {
     private final INotificationService notificationService;
     private final IReportService reportService;
     private final IProductImgService productImgService;
+
 
 //    @Autowired
 //    public UserController(IUserService userService,) {
@@ -41,7 +43,7 @@ public class UserController {
         this.productImgService = productImgService;
     }
 
-    @GetMapping()
+    @GetMapping("/getAllUser")
     public GlobalRes<List<User>> getAllUsers() {
         List<User> users = userService.getALLUser();
         if (users != null && !users.isEmpty()) {
@@ -53,7 +55,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("user/id/{id}")
     public GlobalRes<Optional<User>> getUserById(@PathVariable int id) {
         Optional<User> user = userService.getUserById(id);
         if (user.isPresent()) {
@@ -63,7 +65,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/username/{userId}")
+    @GetMapping("user/username/{userId}")
     public GlobalRes<List<User>> getListUserSentMessage(@PathVariable Integer userId) {
         List<User> users = userService.findAllUserSent(userId);
         if (users != null && !users.isEmpty()) {
@@ -75,7 +77,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/username/{username}")
+    @GetMapping("user/username/{username}")
     public GlobalRes<Optional<User>> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
         if (user.isPresent()) {
@@ -99,7 +101,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("user/{id}")
     public GlobalRes<String> updateUser(@PathVariable int id, @RequestBody User user) {
         try {
             Optional<User> existingUser = userService.getUserById(id);
@@ -116,7 +118,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public GlobalRes<String> deleteUser(@PathVariable int id) {
         try {
             Optional<User> existingUser = userService.getUserById(id);
@@ -131,7 +133,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/admin")
     public GlobalRes<String> deleteAllUser() {
         try {
             userService.deleteAllUser();

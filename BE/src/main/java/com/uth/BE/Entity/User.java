@@ -1,6 +1,6 @@
 package com.uth.BE.Entity;
 
-import com.uth.BE.Entity.model.Role;
+//import com.uth.BE.Entity.model.Role;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -21,9 +21,10 @@ public class User {
     @Column(name = "pass", nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    private Role role;
+
+
+    @Column(name = "roles", nullable = false)
+    private String roles = "CLIENT";
 
     @Column(name = "phone_number", length = 15)
     private String phoneNumber;
@@ -60,6 +61,14 @@ public class User {
         return email;
     }
 
+    public String getRole() {
+        return roles ;
+    }
+
+    public void setRole(String role) {
+        this.roles  = role;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -72,17 +81,17 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
-    }
+//    /public Role getRole() {
+//        return role;
+//    }
 
-    public void setRole(String role) {
-        try {
-            this.role = Role.valueOf(role.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            System.err.println("Invalid role: " + role);
-        }
-    }
+//    public void setRole(String role) {
+//        try {
+//            this.role = Role.valueOf(role.toUpperCase());
+//        } catch (IllegalArgumentException e) {
+//            System.err.println("Invalid role: " + role);
+//        }
+//    }
 
     public String getPhoneNumber() {
         return phoneNumber;

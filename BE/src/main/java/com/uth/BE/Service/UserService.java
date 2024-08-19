@@ -16,6 +16,8 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
     private final UserRepository userRepository;
+    @Autowired
+    public PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -59,7 +61,6 @@ public class UserService implements IUserService {
                 throw new IllegalArgumentException("Email already exists");
             }
 
-            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10 );
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
         } catch (IllegalArgumentException e) {
