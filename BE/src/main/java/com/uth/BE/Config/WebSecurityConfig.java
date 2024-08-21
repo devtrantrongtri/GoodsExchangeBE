@@ -4,7 +4,9 @@ import com.uth.BE.Service.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +29,7 @@ public class WebSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/user/sign-up","/user/getAllUser").permitAll();
+                    registry.requestMatchers("/user/sign-up","/user/getAllUser","/auth/authenticate").permitAll();
                     registry.requestMatchers("/user/admin/**").hasRole("ADMIN");
                     registry.requestMatchers("/user/moderator/**").hasRole("MODERATOR");
                     registry.requestMatchers("/user/user/**").hasRole("CLIENT");
@@ -59,6 +61,11 @@ public class WebSecurityConfig {
         return myUserDetailService;
     }
 
+    /*
+    *   DAOAuth : provide method to auth user info from database
+    *   AuthenticationManager là một interface quản lý quá trình xác thực trong Spring Security.
+    *   Nó phối hợp với các AuthenticationProvider để xác thực người dùng.
+    * */
     @Bean
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -67,6 +74,10 @@ public class WebSecurityConfig {
         return provider;
     }
 
+    @Bean
+    AuthenticationManager authenticationManager() {
+        return new ProviderManager(authenticationProvider());
+    }
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
