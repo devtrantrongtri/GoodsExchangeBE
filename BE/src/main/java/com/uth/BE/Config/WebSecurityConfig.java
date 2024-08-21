@@ -1,7 +1,10 @@
 package com.uth.BE.Config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uth.BE.Service.MyUserDetailService;
-import com.uth.BE.jwt.JwtAuthenticationFilter;
+import com.uth.BE.dto.res.GlobalRes;
+import com.uth.BE.filters.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,23 +28,31 @@ public class WebSecurityConfig {
     @Autowired
     private MyUserDetailService myUserDetailService; // implement UserDetailService
     @Autowired
-    private JwtAuthenticationFilter authenticationFilter;
-
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private ObjectMapper objectMapper;
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/user/sign-up","/user/getAllUser","/auth/authenticate").permitAll();
-                    registry.requestMatchers("/user/admin/**").hasRole("ADMIN");
-                    registry.requestMatchers("/user/moderator/**").hasRole("MODERATOR");
-                    registry.requestMatchers("/user/user/**").hasRole("CLIENT");
-//                    registry.requestMatchers("/products/**").hasRole("ADMIN");
+                    registry.requestMatchers(SecurityEndpoints.PUBLIC_ENDPOINTS).permitAll();
+                    registry.requestMatchers(SecurityEndpoints.ADMIN_ENDPOINTS).hasRole("ADMIN");
+                    registry.requestMatchers(SecurityEndpoints.MODERATOR_ENDPOINTS).hasRole("MODERATOR");
+                    registry.requestMatchers(SecurityEndpoints.CLIENT_ENDPOINTS).hasRole("CLIENT");
                     registry.anyRequest().authenticated();
                 })
                 // .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            GlobalRes<?> globalRes = new GlobalRes<>(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Authentication token was either missing or invalid.");
+                            response.getWriter().write(objectMapper.writeValueAsString(globalRes));
+                        })
+                )
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package com.uth.BE.jwt;
+package com.uth.BE.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +19,7 @@ public class JwtService {
 //    private static final Long VALIDITY  = TimeUnit.HOURS.toMillis(24);
 private static final Long VALIDITY  = TimeUnit.MINUTES.toMillis(30); // 30 phuts
     // modified func to parseJwt to claims format.
-    private Claims parseJwt(String jwt) {
+    private Claims getClaims(String jwt) {
         return Jwts.parser()
                 .verifyWith(generateSecretKey())
                 .build()
@@ -63,14 +62,14 @@ private static final Long VALIDITY  = TimeUnit.MINUTES.toMillis(30); // 30 phuts
 *
 *       to create a parser instant,verify jwt,and ẽtract payload
 * */
-        Claims claims = parseJwt(jwt);
+        Claims claims = getClaims(jwt);
         return claims.getSubject();
 
     }
 
 
     public boolean isTokenValid(String jwt) {
-        Claims claims = parseJwt(jwt);
+        Claims claims = getClaims(jwt);
         return claims.getExpiration().after(Date.from(Instant.now())); // return true if valid.
     }
 

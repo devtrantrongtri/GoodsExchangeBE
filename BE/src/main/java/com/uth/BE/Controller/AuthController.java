@@ -3,7 +3,7 @@ package com.uth.BE.Controller;
 import com.uth.BE.Service.MyUserDetailService;
 import com.uth.BE.dto.req.LoginReq;
 import com.uth.BE.dto.res.GlobalRes;
-import com.uth.BE.jwt.JwtService;
+import com.uth.BE.Service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
