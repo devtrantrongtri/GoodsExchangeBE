@@ -17,6 +17,11 @@ public class GlobalRes <T>{
         this.code = code;
         this.msg = msg;
     }
+    public GlobalRes(HttpStatus httpStatus, String msg) {
+        this.code = httpStatus.value();
+        this.msg = msg;
+    }
+
 
     public GlobalRes(HttpStatus httpStatus, String msg, T data) {
         this.code = httpStatus.value();

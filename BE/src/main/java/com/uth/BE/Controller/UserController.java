@@ -1,15 +1,10 @@
 package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.User;
-import com.uth.BE.Service.CommentService;
 import com.uth.BE.Service.Interface.*;
-import com.uth.BE.Service.NotificationService;
-import com.uth.BE.Service.ReportService;
 import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,12 +21,6 @@ public class UserController {
     private final IReportService reportService;
     private final IProductImgService productImgService;
 
-
-//    @Autowired
-//    public UserController(IUserService userService,) {
-//        this.userService = userService;
-//        this.commentService = commentService;
-//    }
 
 @Autowired
     public UserController(IUserService userService, ICommentService commentService, IWishlistService wishlistService, INotificationService notificationService, IReportService reportService, IProductImgService productImgService) {
@@ -51,7 +40,7 @@ public class UserController {
             return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
         } else {
 //            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success",null);
+            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
         }
     }
 
@@ -73,7 +62,7 @@ public class UserController {
             return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
         } else {
 //            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success",null);
+            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
         }
     }
 
@@ -92,11 +81,11 @@ public class UserController {
         try {
 
             userService.createUser(user);
-            return new GlobalRes<>(HttpStatus.CREATED, "User created successfully", null);
+            return new GlobalRes<>(HttpStatus.CREATED, "User created successfully");
         } catch (IllegalArgumentException e) {
-            return new GlobalRes<>(HttpStatus.CONFLICT, e.getMessage(), null);
+            return new GlobalRes<>(HttpStatus.CONFLICT, e.getMessage());
         } catch (Exception e) {
-            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user", null);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create user");
         }
     }
 
@@ -108,12 +97,12 @@ public class UserController {
             if (existingUser.isPresent()) {
                 user.setUserId(existingUser.get().getUserId());
                 userService.updateUser(user);
-                return new GlobalRes<>(HttpStatus.OK, "User updated successfully", null);
+                return new GlobalRes<>(HttpStatus.OK, "User updated successfully");
             } else {
-                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found");
             }
         } catch (Exception e) {
-            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update user", null);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update user");
         }
     }
 
@@ -124,12 +113,12 @@ public class UserController {
             Optional<User> existingUser = userService.getUserById(id);
             if (existingUser.isPresent()) {
                 userService.deleteUserById(id);
-                return new GlobalRes<>(HttpStatus.OK, "User deleted successfully", null);
+                return new GlobalRes<>(HttpStatus.OK, "User deleted successfully");
             } else {
-                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found");
             }
         } catch (Exception e) {
-            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete user", null);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete user");
         }
     }
 
@@ -137,10 +126,10 @@ public class UserController {
     public GlobalRes<String> deleteAllUser() {
         try {
             userService.deleteAllUser();
-            return new GlobalRes<String>( HttpStatus.OK,"success",null);
+            return new GlobalRes<String>( HttpStatus.OK,"success");
         } catch (Exception e) {
 //            return new ResponseEntity<>("Failed to delete user", HttpStatus.INTERNAL_SERVER_ERROR);
-            return new GlobalRes<String>( HttpStatus.INTERNAL_SERVER_ERROR,"success",null);
+            return new GlobalRes<String>( HttpStatus.INTERNAL_SERVER_ERROR,"failed");
 
         }
     }
