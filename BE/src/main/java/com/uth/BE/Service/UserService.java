@@ -3,6 +3,7 @@ package com.uth.BE.Service;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IUserService;
+import com.uth.BE.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService {
@@ -47,8 +49,16 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<User> findAllUserSent(Integer userid) {
-        return userRepository.findUsersWithMessages(userid);
+    public List<UserDTO> findAllUserSent(Integer userId) {
+        // Lấy danh sách User từ repository
+        List<User> users = userRepository.findUsersWithMessages(userId);
+
+        // Chuyển đổi danh sách User sang UserDTO
+        List<UserDTO> userDTOs = users.stream()
+                .map(UserDTO::convertToDTO)  // Chuyển đổi từng User sang UserDTO
+                .collect(Collectors.toList());
+
+        return userDTOs;
     }
 
     @Override
@@ -107,4 +117,16 @@ public class UserService implements IUserService {
     public void deleteAllUser() {
         userRepository.deleteAll();
     }
+
+//    private UserDTO convertToDTO(User user) {
+//        // Chuyển đổi User sang UserDTO
+//        return UserDTO.builder()
+//                .userId(user.getUserId())
+//                .username(user.getUsername())
+//                .email(user.getEmail())
+//                .address(user.getAddress())
+//                .role(user.getRoles())
+//                .phoneNumber(user.getPhoneNumber())
+//                .build();
+//    }
 }

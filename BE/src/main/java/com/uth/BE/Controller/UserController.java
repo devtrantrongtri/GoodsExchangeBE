@@ -1,10 +1,15 @@
 package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.User;
+import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.Interface.*;
+import com.uth.BE.dto.UserDTO;
 import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,20 +36,17 @@ public class UserController {
         this.reportService = reportService;
         this.productImgService = productImgService;
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/getAllUser")
     public GlobalRes<List<User>> getAllUsers() {
         List<User> users = userService.getALLUser();
         if (users != null && !users.isEmpty()) {
-//            return new ResponseEntity<>(users, HttpStatus.OK);
             return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
         } else {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
         }
     }
-
-    @GetMapping("user/id/{id}")
+    @GetMapping("/getUserById/{id}")
     public GlobalRes<Optional<User>> getUserById(@PathVariable int id) {
         Optional<User> user = userService.getUserById(id);
         if (user.isPresent()) {
@@ -54,15 +56,17 @@ public class UserController {
         }
     }
 
-    @GetMapping("user/username/{userId}")
-    public GlobalRes<List<User>> getListUserSentMessage(@PathVariable Integer userId) {
-        List<User> users = userService.findAllUserSent(userId);
+    @GetMapping("/users/sent-messages")
+    public GlobalRes<List<UserDTO>> getListUserSentMessage() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails;
+        customUserDetails = (CustomUserDetails) principal;
+        Integer userId = customUserDetails.getUserId();
+        List<UserDTO> users = userService.findAllUserSent(userId);
         if (users != null && !users.isEmpty()) {
-//            return new ResponseEntity<>(users, HttpStatus.OK);
-            return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
+            return new GlobalRes<List<UserDTO>>(HttpStatus.OK,"success",users);
         } else {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
+            return new GlobalRes<List<UserDTO>>(HttpStatus.NO_CONTENT,"success");
         }
     }
 

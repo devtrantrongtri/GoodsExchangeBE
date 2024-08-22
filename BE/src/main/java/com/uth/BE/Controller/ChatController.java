@@ -2,6 +2,7 @@ package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.ChatMessage;
 import com.uth.BE.Service.ChatService;
+import com.uth.BE.dto.ChatMessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -11,6 +12,7 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 import java.util.List;
@@ -40,8 +42,9 @@ public class ChatController {
     }
 
     // Endpoint để lấy danh sách tin nhắn giữa hai người dùng
-    @GetMapping("/between/{senderId}/{recipientId}")
-    public List<ChatMessage> getMessagesBetweenUsers(@PathVariable Integer senderId, @PathVariable Integer recipientId) {
+    @GetMapping("chat/between/{senderId}/{recipientId}")
+    @ResponseBody
+    public List<ChatMessageDTO> getMessagesBetweenUsers(@PathVariable Integer senderId, @PathVariable Integer recipientId) {
         return chatService.getMessagesBetweenUsers(senderId, recipientId);
     }
 }
