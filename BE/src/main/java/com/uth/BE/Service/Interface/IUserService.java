@@ -14,4 +14,5 @@ public interface IUserService {
     Optional<User> findByUsername(String username);
     void deleteAllUser();
     List<User> findAllUserSent(Integer userid);
+
 }

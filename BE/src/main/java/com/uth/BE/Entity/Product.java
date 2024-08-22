@@ -1,5 +1,6 @@
 package com.uth.BE.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -25,12 +26,14 @@ public class Product {
     @Column(name = "product_id")
     private int product_id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "seller_id")
+    @ManyToOne
+    @JoinColumn(name = "seller_id", referencedColumnName = "user_id", nullable = false)
+    @JsonIgnore
     private User seller;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id")
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnore
     private Category category;
 
     @Column(name = "title", nullable = false)
