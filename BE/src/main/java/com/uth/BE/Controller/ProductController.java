@@ -58,8 +58,14 @@ public class ProductController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
+            Object categoryIdObj = payload.get("category_id");
+            if (!(categoryIdObj instanceof Integer)) {
+                return new ResponseEntity<>("Invalid category_id format", HttpStatus.BAD_REQUEST);
+            }
+            Integer categoryId = (Integer) categoryIdObj;
+            Optional<Category> categoryOptional = Optional.ofNullable(categoryService.findById(categoryId));
+
             Optional<User> sellerOptional = userService.findByUsername(username);
-            Optional<Category> categoryOptional = Optional.ofNullable(categoryService.findById((Integer) payload.get("category_id")));
 
             if (sellerOptional.isPresent() && categoryOptional.isPresent()) {
                 User seller = sellerOptional.get();
@@ -68,8 +74,20 @@ public class ProductController {
                 Product product = new Product();
                 product.setSeller(seller);
                 product.setCategory(category);
-                product.setTitle((String) payload.get("title"));
-                product.setDescription((String) payload.get("description"));
+
+                Object titleObj = payload.get("title");
+                if (titleObj instanceof String) {
+                    product.setTitle((String) titleObj);
+                } else {
+                    return new ResponseEntity<>("Invalid title format", HttpStatus.BAD_REQUEST);
+                }
+
+                Object descriptionObj = payload.get("description");
+                if (descriptionObj instanceof String) {
+                    product.setDescription((String) descriptionObj);
+                } else {
+                    return new ResponseEntity<>("Invalid description format", HttpStatus.BAD_REQUEST);
+                }
 
                 Object priceObj = payload.get("price");
                 if (priceObj instanceof Double || priceObj instanceof Integer) {
@@ -78,7 +96,12 @@ public class ProductController {
                     return new ResponseEntity<>("Invalid price format", HttpStatus.BAD_REQUEST);
                 }
 
-                product.setStatus((String) payload.get("status"));
+                Object statusObj = payload.get("status");
+                if (statusObj instanceof String) {
+                    product.setStatus((String) statusObj);
+                } else {
+                    return new ResponseEntity<>("Invalid status format", HttpStatus.BAD_REQUEST);
+                }
 
                 productService.createProduct(product);
                 return new ResponseEntity<>("Product created successfully", HttpStatus.CREATED);
@@ -90,6 +113,8 @@ public class ProductController {
             return new ResponseEntity<>("Failed to create product: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
 
     @PutMapping("/update_product/{id}")
@@ -115,26 +140,49 @@ public class ProductController {
 
             if (existingSellerId == currentUserId) {
                 if (payload.containsKey("category_id")) {
-                    Integer categoryId = (Integer) payload.get("category_id");
-                    Optional<Category> categoryOptional = Optional.ofNullable(categoryService.findById(categoryId));
-                    if (categoryOptional.isPresent()) {
-                        existingProduct.setCategory(categoryOptional.get());
+                    Object categoryIdObj = payload.get("category_id");
+                    if (categoryIdObj instanceof Integer) {
+                        Integer categoryId = (Integer) categoryIdObj;
+                        Optional<Category> categoryOptional = Optional.ofNullable(categoryService.findById(categoryId));
+                        if (categoryOptional.isPresent()) {
+                            existingProduct.setCategory(categoryOptional.get());
+                        } else {
+                            return new ResponseEntity<>("Invalid category_id", HttpStatus.BAD_REQUEST);
+                        }
                     } else {
-                        return new ResponseEntity<>("Invalid category_id", HttpStatus.BAD_REQUEST);
+                        return new ResponseEntity<>("Invalid category_id format", HttpStatus.BAD_REQUEST);
                     }
                 }
 
-                existingProduct.setTitle((String) payload.get("title"));
-                existingProduct.setDescription((String) payload.get("description"));
+                Object titleObj = payload.get("title");
+                if (titleObj instanceof String) {
+                    existingProduct.setTitle((String) titleObj);
+                } else if (titleObj != null) {
+                    return new ResponseEntity<>("Invalid title format", HttpStatus.BAD_REQUEST);
+                }
+
+                Object descriptionObj = payload.get("description");
+                if (descriptionObj instanceof String) {
+                    existingProduct.setDescription((String) descriptionObj);
+                } else if (descriptionObj != null) {
+                    return new ResponseEntity<>("Invalid description format", HttpStatus.BAD_REQUEST);
+                }
 
                 Object priceObj = payload.get("price");
                 if (priceObj instanceof Double) {
                     existingProduct.setPrice(BigDecimal.valueOf((Double) priceObj));
                 } else if (priceObj instanceof Integer) {
                     existingProduct.setPrice(BigDecimal.valueOf((Integer) priceObj));
+                } else if (priceObj != null) {
+                    return new ResponseEntity<>("Invalid price format", HttpStatus.BAD_REQUEST);
                 }
 
-                existingProduct.setStatus((String) payload.get("status"));
+                Object statusObj = payload.get("status");
+                if (statusObj instanceof String) {
+                    existingProduct.setStatus((String) statusObj);
+                } else if (statusObj != null) {
+                    return new ResponseEntity<>("Invalid status format", HttpStatus.BAD_REQUEST);
+                }
 
                 productService.updateProduct(existingProduct);
                 return new ResponseEntity<>("Product updated successfully", HttpStatus.OK);
@@ -145,6 +193,7 @@ public class ProductController {
             return new ResponseEntity<>("Failed to update product: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 
