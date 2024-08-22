@@ -5,6 +5,7 @@ import com.uth.BE.Service.Interface.*;
 import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,20 +32,17 @@ public class UserController {
         this.reportService = reportService;
         this.productImgService = productImgService;
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/getAllUser")
     public GlobalRes<List<User>> getAllUsers() {
         List<User> users = userService.getALLUser();
         if (users != null && !users.isEmpty()) {
-//            return new ResponseEntity<>(users, HttpStatus.OK);
             return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
         } else {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
         }
     }
-
-    @GetMapping("user/id/{id}")
+    @GetMapping("/getUserById/{id}")
     public GlobalRes<Optional<User>> getUserById(@PathVariable int id) {
         Optional<User> user = userService.getUserById(id);
         if (user.isPresent()) {
@@ -54,14 +52,13 @@ public class UserController {
         }
     }
 
-    @GetMapping("user/username/{userId}")
+    @GetMapping("/username/{userId}")
     public GlobalRes<List<User>> getListUserSentMessage(@PathVariable Integer userId) {
-        List<User> users = userService.findAllUserSent(userId);
+//        List<User> users = userService.findAllUserSent(userId);
+        List<User> users = null;
         if (users != null && !users.isEmpty()) {
-//            return new ResponseEntity<>(users, HttpStatus.OK);
             return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
         } else {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
         }
     }
