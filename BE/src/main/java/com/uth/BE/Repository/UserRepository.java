@@ -17,8 +17,15 @@ public interface UserRepository  extends JpaRepository<User,Integer> {
     boolean existsByUsername(String username);
     Optional<User> findByUsername(String username);
     boolean existsByEmail(String email);
-    @Query("SELECT DISTINCT CASE WHEN cm.sender.userId = :userId THEN cm.recipient ELSE cm.sender END " +
-            "FROM ChatMessage cm " +
-            "WHERE cm.sender.userId = :userId OR cm.recipient.userId = :userId")
+    @Query("SELECT u FROM User u " +
+            "WHERE u.userId IN (" +
+            "  SELECT cm.sender.userId FROM ChatMessage cm " +
+            "  WHERE cm.sender.userId = :userId OR cm.recipient.userId = :userId " +
+            "  UNION " +
+            "  SELECT cm.recipient.userId FROM ChatMessage cm " +
+            "  WHERE cm.sender.userId = :userId OR cm.recipient.userId = :userId " +
+            ") " +
+            "AND u.userId != :userId")
     List<User> findUsersWithMessages(@Param("userId") Integer userId);
+
 }

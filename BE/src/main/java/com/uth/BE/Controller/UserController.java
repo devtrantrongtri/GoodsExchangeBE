@@ -1,11 +1,15 @@
 package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.User;
+import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.Interface.*;
+import com.uth.BE.dto.UserDTO;
 import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,14 +56,17 @@ public class UserController {
         }
     }
 
-    @GetMapping("/username/{userId}")
-    public GlobalRes<List<User>> getListUserSentMessage(@PathVariable Integer userId) {
-//        List<User> users = userService.findAllUserSent(userId);
-        List<User> users = null;
+    @GetMapping("/users/sent-messages")
+    public GlobalRes<List<UserDTO>> getListUserSentMessage() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails customUserDetails;
+        customUserDetails = (CustomUserDetails) principal;
+        Integer userId = customUserDetails.getUserId();
+        List<UserDTO> users = userService.findAllUserSent(userId);
         if (users != null && !users.isEmpty()) {
-            return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
+            return new GlobalRes<List<UserDTO>>(HttpStatus.OK,"success",users);
         } else {
-            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
+            return new GlobalRes<List<UserDTO>>(HttpStatus.NO_CONTENT,"success");
         }
     }
 

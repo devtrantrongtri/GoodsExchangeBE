@@ -1,6 +1,7 @@
 package com.uth.BE.filters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.JwtService;
 import com.uth.BE.Service.MyUserDetailService;
 import com.uth.BE.dto.res.GlobalRes;
@@ -46,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             username = jwtService.extractUsername(jwt);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = myUserDetailService.loadUserByUsername(username); // lấy các thông tin từ database và gán vào userDetail form.
+                CustomUserDetails userDetails = myUserDetailService.loadUserByUsername(username); // lấy các thông tin từ database và gán vào userDetail form.
 
                 if (userDetails != null && jwtService.isTokenValid(jwt)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(

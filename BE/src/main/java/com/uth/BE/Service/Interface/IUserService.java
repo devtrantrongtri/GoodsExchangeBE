@@ -1,6 +1,7 @@
 package com.uth.BE.Service.Interface;
 
 import com.uth.BE.Entity.User;
+import com.uth.BE.dto.UserDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,5 +14,5 @@ public interface IUserService {
     void updateUser(User user);
     Optional<User> findByUsername(String username);
     void deleteAllUser();
-    List<User> findAllUserSent(Integer userid);
+    List<UserDTO> findAllUserSent(Integer userid);
 }
