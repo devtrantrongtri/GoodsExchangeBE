@@ -6,6 +6,7 @@ import com.uth.BE.Entity.User;
 import com.uth.BE.Service.Interface.ICategoryService;
 import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.Service.Interface.IUserService;
+import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,22 +35,22 @@ public class ProductController {
     }
 
     @GetMapping("/get_all_product")
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public GlobalRes<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
         if (products != null && !products.isEmpty()) {
-            return new ResponseEntity<>(products, HttpStatus.OK);
+            return new GlobalRes<List<Product>>(HttpStatus.OK,"success",products);
         } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new GlobalRes<List<Product>>(HttpStatus.NO_CONTENT,"success");
         }
     }
 
     @GetMapping("find_product_by_id/{productID}")
-    public ResponseEntity<Product> findProductById(@PathVariable int productID) {
+    public GlobalRes<Optional<Product>> findProductById(@PathVariable int productID) {
         Optional<Product> existingProduct = productService.getProductById(productID);
         if (existingProduct.isPresent()) {
-            return new ResponseEntity<>(existingProduct.get(), HttpStatus.OK);
+            return new GlobalRes<>(HttpStatus.OK, "Product found", existingProduct);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", Optional.empty());
     }
 
     @PostMapping("/create_product")
@@ -200,19 +201,20 @@ public class ProductController {
 
 
     @DeleteMapping("delete_product/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable int id) {
+    public GlobalRes<String> deleteProduct(@PathVariable int id) {
         try {
             Optional<Product> existingProduct = productService.getProductById(id);
             if (existingProduct.isPresent()) {
                 productService.deleteProductById(id);
-                return new ResponseEntity<>("Product deleted successfully", HttpStatus.OK);
+                return new GlobalRes<>(HttpStatus.OK, "Product deleted successfully");
             } else {
-                return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found");
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to delete product: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete product: " + e.getMessage());
         }
     }
+
 
 
     @PutMapping("/{id}/status")
@@ -232,7 +234,7 @@ public class ProductController {
     }
 
     @GetMapping("find_product_by_user_id/{id}")
-    public ResponseEntity<List<Product>> searchProductsByUser(@PathVariable("id") int userId) {
+    public GlobalRes<List<Product>> searchProductsByUser(@PathVariable("id") int userId) {
         try {
             // Tìm người dùng theo ID
             Optional<User> userOptional = userService.getUserById(userId);
@@ -241,66 +243,70 @@ public class ProductController {
                 // Tìm sản phẩm theo người dùng
                 List<Product> products = productService.searchProductsByUser(Optional.of(user));
                 if (!products.isEmpty()) {
-                    return new ResponseEntity<>(products, HttpStatus.OK);
+                    return new GlobalRes<>(HttpStatus.OK, "Products found", products);
                 } else {
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                    return new GlobalRes<>(HttpStatus.NO_CONTENT, "No products found for the given user");
                 }
             } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found");
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to search products: " + e.getMessage());
         }
     }
 
 
 
+
     @GetMapping("find_product_by_category_id/{categoryId}")
-    public ResponseEntity<List<Product>> searchProductsByCategory(@PathVariable int categoryId) {
+    public GlobalRes<List<Product>> searchProductsByCategory(@PathVariable int categoryId) {
         try {
             Category category = categoryService.findById(categoryId);
             if (category != null) {
                 List<Product> products = productService.searchProductsByCategory(category);
                 if (!products.isEmpty()) {
-                    return new ResponseEntity<>(products, HttpStatus.OK);
+                    return new GlobalRes<>(HttpStatus.OK, "Products found", products);
                 } else {
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                    return new GlobalRes<>(HttpStatus.NO_CONTENT, "No products found for the given category");
                 }
             } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "Category not found");
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to search products: " + e.getMessage());
         }
     }
 
+
     @GetMapping("find_product_by_title/{title}")
-    public ResponseEntity<List<Product>> searchProductsByTitle(@PathVariable String title) {
+    public GlobalRes<List<Product>> searchProductsByTitle(@PathVariable String title) {
         try {
             List<Product> products = productService.searchProductsByTitle(title);
             if (!products.isEmpty()) {
-                return new ResponseEntity<>(products, HttpStatus.OK);
+                return new GlobalRes<>(HttpStatus.OK, "Products found", products);
             } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new GlobalRes<>(HttpStatus.NO_CONTENT, "No products found with the given title");
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to search products: " + e.getMessage());
         }
     }
 
+
     @GetMapping("find_product_by_price/")
-    public ResponseEntity<List<Product>> searchProductsByPrice(
+    public GlobalRes<List<Product>> searchProductsByPrice(
             @RequestParam BigDecimal minPrice,
             @RequestParam BigDecimal maxPrice) {
         try {
             List<Product> products = productService.searchProductsByPrice(minPrice, maxPrice);
             if (!products.isEmpty()) {
-                return new ResponseEntity<>(products, HttpStatus.OK);
+                return new GlobalRes<>(HttpStatus.OK, "Products found", products);
             } else {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new GlobalRes<>(HttpStatus.NO_CONTENT, "No products found in the given price range");
             }
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to search products: " + e.getMessage());
         }
     }
+
 }
