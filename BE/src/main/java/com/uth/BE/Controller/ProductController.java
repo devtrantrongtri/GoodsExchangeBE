@@ -54,14 +54,14 @@ public class ProductController {
     }
 
     @PostMapping("/create_product")
-    public ResponseEntity<String> createProduct(@RequestBody Map<String, Object> payload) {
+    public GlobalRes<String> createProduct(@RequestBody Map<String, Object> payload) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
             Object categoryIdObj = payload.get("category_id");
             if (!(categoryIdObj instanceof Integer)) {
-                return new ResponseEntity<>("Invalid category_id format", HttpStatus.BAD_REQUEST);
+                return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id format");
             }
             Integer categoryId = (Integer) categoryIdObj;
             Optional<Category> categoryOptional = Optional.ofNullable(categoryService.findById(categoryId));
@@ -80,60 +80,57 @@ public class ProductController {
                 if (titleObj instanceof String) {
                     product.setTitle((String) titleObj);
                 } else {
-                    return new ResponseEntity<>("Invalid title format", HttpStatus.BAD_REQUEST);
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid title format");
                 }
 
                 Object descriptionObj = payload.get("description");
                 if (descriptionObj instanceof String) {
                     product.setDescription((String) descriptionObj);
                 } else {
-                    return new ResponseEntity<>("Invalid description format", HttpStatus.BAD_REQUEST);
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid description format");
                 }
 
                 Object priceObj = payload.get("price");
                 if (priceObj instanceof Double || priceObj instanceof Integer) {
                     product.setPrice(BigDecimal.valueOf(((Number) priceObj).doubleValue()));
                 } else {
-                    return new ResponseEntity<>("Invalid price format", HttpStatus.BAD_REQUEST);
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid price format");
                 }
 
                 Object statusObj = payload.get("status");
                 if (statusObj instanceof String) {
                     product.setStatus((String) statusObj);
                 } else {
-                    return new ResponseEntity<>("Invalid status format", HttpStatus.BAD_REQUEST);
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid status format");
                 }
 
                 productService.createProduct(product);
-                return new ResponseEntity<>("Product created successfully", HttpStatus.CREATED);
+                return new GlobalRes<>(HttpStatus.CREATED, "Product created successfully");
             } else {
-                return new ResponseEntity<>("Invalid category_id", HttpStatus.BAD_REQUEST);
+                return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id");
             }
 
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to create product: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create product: " + e.getMessage());
         }
     }
 
-
-
-
     @PutMapping("/update_product/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestBody Map<String, Object> payload) {
+    public GlobalRes<String> updateProduct(@PathVariable int id, @RequestBody Map<String, Object> payload) {
         try {
             Optional<Product> existingProductOptional = productService.getProductById(id);
             if (!existingProductOptional.isPresent()) {
-                return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found");
             }
             Product existingProduct = existingProductOptional.get();
-            int existingSellerId = existingProduct.getSeller().getUserId(); // Lấy seller_id của sản phẩm
+            int existingSellerId = existingProduct.getSeller().getUserId();
 
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String currentUsername = authentication.getName();
 
             Optional<User> currentUserOptional = userService.findByUsername(currentUsername);
             if (!currentUserOptional.isPresent()) {
-                return new ResponseEntity<>("Current user not found", HttpStatus.UNAUTHORIZED);
+                return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Current user not found");
             }
 
             User currentUser = currentUserOptional.get();
@@ -148,10 +145,10 @@ public class ProductController {
                         if (categoryOptional.isPresent()) {
                             existingProduct.setCategory(categoryOptional.get());
                         } else {
-                            return new ResponseEntity<>("Invalid category_id", HttpStatus.BAD_REQUEST);
+                            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id");
                         }
                     } else {
-                        return new ResponseEntity<>("Invalid category_id format", HttpStatus.BAD_REQUEST);
+                        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id format");
                     }
                 }
 
@@ -159,14 +156,14 @@ public class ProductController {
                 if (titleObj instanceof String) {
                     existingProduct.setTitle((String) titleObj);
                 } else if (titleObj != null) {
-                    return new ResponseEntity<>("Invalid title format", HttpStatus.BAD_REQUEST);
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid title format");
                 }
 
                 Object descriptionObj = payload.get("description");
                 if (descriptionObj instanceof String) {
                     existingProduct.setDescription((String) descriptionObj);
                 } else if (descriptionObj != null) {
-                    return new ResponseEntity<>("Invalid description format", HttpStatus.BAD_REQUEST);
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid description format");
                 }
 
                 Object priceObj = payload.get("price");
@@ -175,30 +172,25 @@ public class ProductController {
                 } else if (priceObj instanceof Integer) {
                     existingProduct.setPrice(BigDecimal.valueOf((Integer) priceObj));
                 } else if (priceObj != null) {
-                    return new ResponseEntity<>("Invalid price format", HttpStatus.BAD_REQUEST);
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid price format");
                 }
 
                 Object statusObj = payload.get("status");
                 if (statusObj instanceof String) {
                     existingProduct.setStatus((String) statusObj);
                 } else if (statusObj != null) {
-                    return new ResponseEntity<>("Invalid status format", HttpStatus.BAD_REQUEST);
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid status format");
                 }
 
                 productService.updateProduct(existingProduct);
-                return new ResponseEntity<>("Product updated successfully", HttpStatus.OK);
+                return new GlobalRes<>(HttpStatus.OK, "Product updated successfully");
             } else {
-                return new ResponseEntity<>("Unauthorized: seller_id does not match", HttpStatus.FORBIDDEN);
+                return new GlobalRes<>(HttpStatus.FORBIDDEN, "Unauthorized: seller_id does not match");
             }
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to update product: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update product: " + e.getMessage());
         }
     }
-
-
-
-
-
 
     @DeleteMapping("delete_product/{id}")
     public GlobalRes<String> deleteProduct(@PathVariable int id) {
