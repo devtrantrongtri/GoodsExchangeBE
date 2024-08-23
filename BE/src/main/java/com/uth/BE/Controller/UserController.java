@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -58,27 +59,36 @@ public class UserController {
 
     @GetMapping("/users/sent-messages")
     public GlobalRes<List<UserDTO>> getListUserSentMessage() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CustomUserDetails customUserDetails;
-        customUserDetails = (CustomUserDetails) principal;
-        Integer userId = customUserDetails.getUserId();
-        List<UserDTO> users = userService.findAllUserSent(userId);
-        if (users != null && !users.isEmpty()) {
-            return new GlobalRes<List<UserDTO>>(HttpStatus.OK,"success",users);
-        } else {
-            return new GlobalRes<List<UserDTO>>(HttpStatus.NO_CONTENT,"success");
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof CustomUserDetails customUserDetails) {
+                Integer userId = customUserDetails.getUserId();
+                List<UserDTO> users = userService.findAllUserSent(userId);
+                if (users != null && !users.isEmpty()) {
+                    return new GlobalRes<>(HttpStatus.OK, "success", users);
+                } else {
+                    return new GlobalRes<>(HttpStatus.NO_CONTENT, "No users found");
+                }
+            } else {
+                return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            }
+        } catch (Exception e) {
+
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred: " + e.getMessage());
         }
     }
 
-    @GetMapping("user/username/{username}")
-    public GlobalRes<Optional<User>> getUserByUsername(@PathVariable String username) {
+    @GetMapping("/username/{username}")
+    public GlobalRes<UserDTO> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
         if (user.isPresent()) {
-            return new GlobalRes<>(HttpStatus.OK, "User found", user);
+            UserDTO userDTO = UserDTO.convertToDTO(user.get());
+            return new GlobalRes<>(HttpStatus.OK, "User found", userDTO);
         } else {
-            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", Optional.empty());
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
         }
     }
+
 
     @PostMapping("/sign-up")
     public GlobalRes<String> createUser(@RequestBody User user) {
@@ -94,24 +104,28 @@ public class UserController {
     }
 
 
-    @PutMapping("user/{id}")
-    public GlobalRes<String> updateUser(@PathVariable int id, @RequestBody User user) {
-        try {
-            Optional<User> existingUser = userService.getUserById(id);
-            if (existingUser.isPresent()) {
-                user.setUserId(existingUser.get().getUserId());
-                userService.updateUser(user);
-                return new GlobalRes<>(HttpStatus.OK, "User updated successfully");
-            } else {
-                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found");
+    @PutMapping("/update")
+    public GlobalRes<User> updateUser(@RequestBody User updatedUser) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomUserDetails customUserDetails) {
+            Integer userId = customUserDetails.getUserId();
+            try {
+                User user = userService.updateUser(userId, updatedUser);
+                return new GlobalRes<>(HttpStatus.OK, "User updated successfully", user);
+            } catch (IllegalArgumentException e) {
+                return new GlobalRes<>(HttpStatus.BAD_REQUEST, e.getMessage());
+            } catch (NoSuchElementException e) {
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, e.getMessage());
+            } catch (Exception e) {
+                return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update user");
             }
-        } catch (Exception e) {
-            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update user");
+        } else {
+            return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
     }
 
-
-    @DeleteMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete/{id}")
     public GlobalRes<String> deleteUser(@PathVariable int id) {
         try {
             Optional<User> existingUser = userService.getUserById(id);
@@ -125,8 +139,8 @@ public class UserController {
             return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete user");
         }
     }
-
-    @DeleteMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/deleteAll")
     public GlobalRes<String> deleteAllUser() {
         try {
             userService.deleteAllUser();
