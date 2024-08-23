@@ -1,6 +1,8 @@
 package com.uth.BE.Service;
 
 import com.uth.BE.Entity.User;
+import com.uth.BE.Entity.UserProfile;
+import com.uth.BE.Repository.UserProfileRepository;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IUserService;
 import com.uth.BE.dto.UserDTO;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements IUserService {
     private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
     @Autowired
     public PasswordEncoder passwordEncoder;
     private static final List<String> VALID_ROLES = Arrays.asList("ADMIN", "MODERATOR", "CLIENT");
@@ -31,8 +34,9 @@ public class UserService implements IUserService {
                 .allMatch(VALID_ROLES::contains);
     }
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,UserProfileRepository userProfileRepository) {
         this.userRepository = userRepository;
+        this.userProfileRepository = userProfileRepository;
     }
 
     @Override
@@ -82,6 +86,9 @@ public class UserService implements IUserService {
 
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
+            UserProfile userProfile = new UserProfile();
+            userProfile.setUser(user); // Link UserProfile with the User
+            userProfileRepository.save(userProfile);
         } catch (IllegalArgumentException e) {
 
             System.err.println("Error: " + e.getMessage());

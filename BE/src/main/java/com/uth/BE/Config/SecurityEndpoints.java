@@ -24,6 +24,7 @@ public class SecurityEndpoints {
 
     public static final String[] CLIENT_ENDPOINTS = {
             "/chat/between/**",
-            "user/**"
+            "user/**",
+            "/userProfiles/**"
     };
 }
