@@ -27,10 +27,10 @@ public class CustomUserDetails implements UserDetails {
     }
 
     private List<String> getRoles(User user) {
-        if (user.getRole() == null || user.getRole().isEmpty()) {
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
             return List.of("CLIENT"); // Default role
         }
-        return List.of(user.getRole().split(","));
+        return List.of(user.getRoles().split(","));
     }
 
     @Override
