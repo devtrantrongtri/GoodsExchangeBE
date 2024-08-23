@@ -58,27 +58,36 @@ public class UserController {
 
     @GetMapping("/users/sent-messages")
     public GlobalRes<List<UserDTO>> getListUserSentMessage() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CustomUserDetails customUserDetails;
-        customUserDetails = (CustomUserDetails) principal;
-        Integer userId = customUserDetails.getUserId();
-        List<UserDTO> users = userService.findAllUserSent(userId);
-        if (users != null && !users.isEmpty()) {
-            return new GlobalRes<List<UserDTO>>(HttpStatus.OK,"success",users);
-        } else {
-            return new GlobalRes<List<UserDTO>>(HttpStatus.NO_CONTENT,"success");
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof CustomUserDetails customUserDetails) {
+                Integer userId = customUserDetails.getUserId();
+                List<UserDTO> users = userService.findAllUserSent(userId);
+                if (users != null && !users.isEmpty()) {
+                    return new GlobalRes<>(HttpStatus.OK, "success", users);
+                } else {
+                    return new GlobalRes<>(HttpStatus.NO_CONTENT, "No users found");
+                }
+            } else {
+                return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            }
+        } catch (Exception e) {
+
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred: " + e.getMessage());
         }
     }
 
-    @GetMapping("user/username/{username}")
-    public GlobalRes<Optional<User>> getUserByUsername(@PathVariable String username) {
+    @GetMapping("/username/{username}")
+    public GlobalRes<UserDTO> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
         if (user.isPresent()) {
-            return new GlobalRes<>(HttpStatus.OK, "User found", user);
+            UserDTO userDTO = UserDTO.convertToDTO(user.get());
+            return new GlobalRes<>(HttpStatus.OK, "User found", userDTO);
         } else {
-            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", Optional.empty());
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
         }
     }
+
 
     @PostMapping("/sign-up")
     public GlobalRes<String> createUser(@RequestBody User user) {
