@@ -29,7 +29,7 @@ public class Comment {
     private User user;
 
     @Column(name = "comment_text", columnDefinition = "TEXT", nullable = false)
-    private String comment_text;
+    private String text;
 
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -42,7 +42,7 @@ public class Comment {
 
     public Comment(String comment_text) {
         super();
-        this.comment_text = comment_text;
+        this.text = comment_text;
     }
 
     public int getCommentId() {
@@ -70,11 +70,11 @@ public class Comment {
     }
 
     public String getCommentText() {
-        return comment_text;
+        return text;
     }
 
     public void setCommentText(String comment_text) {
-        this.comment_text = comment_text;
+        this.text = comment_text;
     }
 
     public Timestamp getCreatedAt() {

@@ -7,6 +7,8 @@ public class SecurityEndpoints {
             "/auth/authenticate",
             "products/**",
             "/auth/authenticate", // login
+            "/comments/**",
+            "/notifications/**",
 
     };
 

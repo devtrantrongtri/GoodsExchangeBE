@@ -7,6 +7,7 @@ import com.uth.BE.Repository.NotificationRepository;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -21,6 +22,8 @@ public class NotificationService implements INotificationService {
     private UserRepository userRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository) {
         this.notificationRepository = notificationRepository;
@@ -29,7 +32,9 @@ public class NotificationService implements INotificationService {
 
     @Override
     public Notification save(Notification notification) {
-        return notificationRepository.save(notification);
+        Notification savedNotification = notificationRepository.save(notification);
+        messagingTemplate.convertAndSend("/topic/notifications", savedNotification);
+        return savedNotification;
     }
 
     @Override

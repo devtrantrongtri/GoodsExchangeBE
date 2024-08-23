@@ -19,4 +19,8 @@ public interface ICommentService {
     public List<Comment> findCommentByUser(int userID);
 
     public List<Comment> findCommentByProduct(int productD);
+
+    public List<Comment> findCommentByProductAndUser(int productD, int userID);
+
+    public List<Comment> searchCommentsByKeyword(String keyword);
 }

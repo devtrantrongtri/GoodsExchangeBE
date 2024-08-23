@@ -69,6 +69,31 @@ public class CommentController {
         return new GlobalRes<List<Comment>>(HttpStatus.OK, "All comments read successfully", c);
     }
 
+    @GetMapping("user/{userId}/post/{postId}")
+    public GlobalRes<List<Comment>> getCommentsByUserAndProduct(@PathVariable("userId") int userID, @PathVariable("postId") int productID) {
+        List<Comment> comments = commentService.findCommentByProductAndUser(productID, userID);
+        if (comments.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "List empty", null);
+        }
+        return new GlobalRes<>(HttpStatus.OK, "Successfully fetched comments for the user and product", comments);
+    }
+
+    @GetMapping("/post/{id}/count")
+    public GlobalRes<Long> countCommentsByPost(@PathVariable("id") int postId) {
+        long count = commentService.findCommentByProduct(postId).size();
+        return new GlobalRes<>(HttpStatus.OK, "Successfully fetched comment count for the product", count);
+    }
+
+    @GetMapping("/search")
+    public GlobalRes<List<Comment>> searchComments(@RequestParam String keyword) {
+        List<Comment> comments = commentService.searchCommentsByKeyword(keyword);
+
+        if (!comments.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.OK, "Successfully fetched comments containing the keyword", comments);
+        }
+        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "No comments found containing the keyword", null);
+    }
+
     @GetMapping("/post/{id}")
     public GlobalRes<List<Comment>> getCommentByPost(@PathVariable("id") int productID) {
         List<Comment> c = commentService.findCommentByProduct(productID);

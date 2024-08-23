@@ -77,4 +77,22 @@ public class CommentService implements ICommentService {
         }
         return List.of();
     }
+
+    @Override
+    public List<Comment> findCommentByProductAndUser(int productD, int userID) {
+        Product p = productRepo.findById(productD).orElse(null);
+        User u = userRepo.findById(userID).orElse(null);
+        if (u != null && p != null) {
+            return commentRepo.findByUserAndProduct(u, p);
+        }
+        return List.of();
+    }
+
+    @Override
+    public List<Comment> searchCommentsByKeyword(String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            throw new IllegalArgumentException("Keyword must not be null or empty");
+        }
+        return commentRepo.findByTextContains(keyword);
+    }
 }

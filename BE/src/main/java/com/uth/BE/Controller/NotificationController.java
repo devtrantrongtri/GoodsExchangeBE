@@ -1,6 +1,5 @@
 package com.uth.BE.Controller;
 
-import com.uth.BE.Entity.Comment;
 import com.uth.BE.Entity.Notification;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Service.NotificationService;
@@ -9,6 +8,7 @@ import com.uth.BE.dto.req.NotificationReq;
 import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +17,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
-//    @Autowired
+    //    @Autowired
     private final NotificationService notificationService;
-//    @Autowired
+    //    @Autowired
     private final UserService userService;
 
     @Autowired
@@ -29,6 +29,7 @@ public class NotificationController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     public GlobalRes<NotificationReq> createNotification(@RequestBody NotificationReq notificationReq) {
         Notification notification = new Notification(notificationReq.getMessage());
         Optional<User> user = userService.getUserById(notificationReq.getUserId());
@@ -67,7 +68,7 @@ public class NotificationController {
         if (notificationList.isEmpty() || notificationList == null) {
             return new GlobalRes<>(HttpStatus.BAD_REQUEST, "List empty",null);
         }
-        return new GlobalRes<>(HttpStatus.OK, "All comments read successfully", notificationList);
+        return new GlobalRes<>(HttpStatus.OK, "All notifications read successfully", notificationList);
     }
 
     @GetMapping("/username/{username}")
@@ -76,7 +77,7 @@ public class NotificationController {
         if (notificationList.isEmpty() || notificationList == null) {
             return new GlobalRes<>(HttpStatus.BAD_REQUEST, "List empty",null);
         }
-        return new GlobalRes<>(HttpStatus.OK, "All comments read successfully", notificationList);
+        return new GlobalRes<>(HttpStatus.OK, "All notifications read successfully", notificationList);
     }
 
     @PostMapping("/update")
