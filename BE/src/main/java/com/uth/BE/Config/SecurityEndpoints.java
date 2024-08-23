@@ -9,6 +9,7 @@ public class SecurityEndpoints {
             "/auth/authenticate", // login
             "/comments/**",
             "/notifications/**",
+            "category/get_all_categories",
 
     };
 
@@ -20,6 +21,9 @@ public class SecurityEndpoints {
     public static final String[] MODERATOR_ENDPOINTS = {
             "/user/moderator/**",
             "/user/getUserById/**", // get user detail
+            "category/create_category",
+            "category/update_category",
+            "category/delete_category",
     };
 
     public static final String[] CLIENT_ENDPOINTS = {
