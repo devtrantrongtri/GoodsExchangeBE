@@ -1,4 +1,11 @@
 # Goods Exchange Application
+
+## PostMan:
+
+  [CLick to view design on Postman](https://app.getpostman.com/join-team?invite_code=52312c6894ce26aea77a9b32891e769f&target_code=33438a84316a18c930b479635611d43b)
+
+
+
 ## Figma Design:
 
   [CLick to view design on Figma](https://www.figma.com/design/2SKsAcz8u7xTsFJcac36Cz/GoodExchange)
