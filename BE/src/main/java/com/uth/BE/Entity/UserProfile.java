@@ -2,9 +2,14 @@ package com.uth.BE.Entity;
 
 import com.uth.BE.Entity.model.FileExtension;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "user_profiles")
 public class UserProfile {
@@ -16,69 +21,20 @@ public class UserProfile {
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
-
+    @Column(name = "first_name")
+    private String FirstName ;
+    @Column(name = "last_name")
+    private String  LastName ;
     @Column(name = "bio")
     @Lob
     private String bio;
-
-    public FileExtension getFile_extension() {
-        return file_extension;
-    }
-
-    public void setFile_extension(FileExtension file_extension) {
-        this.file_extension = file_extension;
-    }
-
     @Column(name = "profile_image_url")
     @Lob
     private String profileImageUrl;
-
-    @Column(name = "file_extension")
-    private FileExtension file_extension;
-
     @Column(name = "created_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    public int getProfileId() {
-        return profileId;
-    }
-
-    public void setProfileId(int profileId) {
-        this.profileId = profileId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public String getProfileImageUrl() {
-        return profileImageUrl;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
 
 }
 
