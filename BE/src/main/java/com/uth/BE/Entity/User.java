@@ -69,13 +69,13 @@ public class User {
 //        return email;
 //    }
 //
-    public String getRole() {
-        return roles ;
-    }
-//
-    public void setRole(String role) {
-        this.roles  = role;
-    }
+//    public String getRole() {
+//        return roles ;
+//    }
+////
+//    public void setRole(String role) {
+//        this.roles  = role;
+//    }
 //
 //    public void setEmail(String email) {
 //        this.email = email;

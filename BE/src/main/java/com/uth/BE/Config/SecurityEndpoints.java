@@ -11,7 +11,7 @@ public class SecurityEndpoints {
     };
 
     public static final String[] ADMIN_ENDPOINTS = {
-            "/user/admin/**",
+            "/admin/**",
 
     };
 
@@ -21,9 +21,7 @@ public class SecurityEndpoints {
     };
 
     public static final String[] CLIENT_ENDPOINTS = {
-            "/user/user/**",
-            "/users/sent-messages",
             "/chat/between/**",
-            "/user/username/{username}"
+            "user/**"
     };
 }

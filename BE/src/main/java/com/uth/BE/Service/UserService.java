@@ -11,7 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -20,7 +22,14 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     @Autowired
     public PasswordEncoder passwordEncoder;
+    private static final List<String> VALID_ROLES = Arrays.asList("ADMIN", "MODERATOR", "CLIENT");
 
+    // Check if roles are valid
+    private boolean areRolesValid(String roles) {
+        return Arrays.stream(roles.split(","))
+                .map(String::trim)
+                .allMatch(VALID_ROLES::contains);
+    }
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -94,14 +103,50 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void updateUser(User user) {
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            // Log the exception and handle it as necessary
-            System.err.println("Error occurred while updating user: " + e.getMessage());
+    public User updateUser(Integer userId, User updatedUser) {
+        Optional<User> existingUserOpt = userRepository.findById(userId);
+
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            if (updatedUser.getUsername() != null && !existingUser.getUsername().equals(updatedUser.getUsername())) {
+                if (userRepository.existsByUsername(updatedUser.getUsername())) {
+                    throw new IllegalArgumentException("Username already exists");
+                }
+                existingUser.setUsername(updatedUser.getUsername());
+            }
+            if (updatedUser.getEmail() != null && !existingUser.getEmail().equals(updatedUser.getEmail())) {
+                if (userRepository.existsByEmail(updatedUser.getEmail())) {
+                    throw new IllegalArgumentException("Email already exists");
+                }
+                existingUser.setEmail(updatedUser.getEmail());
+            }
+
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
+            if (updatedUser.getPhoneNumber() != null) {
+                existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+            }
+            if (updatedUser.getAddress() != null) {
+                existingUser.setAddress(updatedUser.getAddress());
+            }
+            // Validate and update roles
+            if (updatedUser.getRoles() != null && !updatedUser.getRoles().isEmpty()) {
+                if (areRolesValid(updatedUser.getRoles())) {
+                    existingUser.setRoles(updatedUser.getRoles());
+                } else {
+                    throw new IllegalArgumentException("Invalid roles provided");
+                }
+            }
+            if (updatedUser.getCreatedAt() != null) {
+                existingUser.setCreatedAt(updatedUser.getCreatedAt());
+            }
+            return userRepository.save(existingUser);
+        } else {
+            throw new NoSuchElementException("User not found");
         }
     }
+
 
     @Override
     public Optional<User> findByUsername(String username) {

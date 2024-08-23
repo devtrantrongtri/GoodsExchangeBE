@@ -11,7 +11,7 @@ public interface IUserService {
     Optional<User> getUserById(int id);
     void createUser(User user);
     void deleteUserById(int id);
-    void updateUser(User user);
+    User updateUser(Integer userId, User updatedUser);
     Optional<User> findByUsername(String username);
     void deleteAllUser();
     List<UserDTO> findAllUserSent(Integer userid);
