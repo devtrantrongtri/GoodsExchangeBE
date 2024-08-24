@@ -1,9 +1,11 @@
 package com.uth.BE.Service.Interface;
 
 import com.uth.BE.Entity.ProductImg;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.io.IOException;
 
 public interface IProductImgService {
 
@@ -16,4 +18,8 @@ public interface IProductImgService {
     public void delete(int id);
 
     public ProductImg update(ProductImg productImg);
+
+    public String saveProductImage(MultipartFile file) throws IOException;
+
+    public byte[] getProductImage(String fileName) throws IOException;
 }

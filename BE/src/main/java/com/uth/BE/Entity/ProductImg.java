@@ -18,8 +18,8 @@ import java.sql.Timestamp;
 public class ProductImg {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "productimg_id")
-    private int productimg_id;
+    @Column(name = "id")
+    private int id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
@@ -49,12 +49,12 @@ public class ProductImg {
         this.file_extension = file_extension;
     }
 
-    public int getProductimgId() {
-        return productimg_id;
+    public int getId() {
+        return id;
     }
 
-    public void setProductimgId(int productimg_id) {
-        this.productimg_id = productimg_id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Product getProduct() {
