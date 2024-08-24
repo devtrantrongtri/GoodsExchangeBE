@@ -15,4 +15,5 @@ public interface IUserService {
     Optional<User> findByUsername(String username);
     void deleteAllUser();
     List<UserDTO> findAllUserSent(Integer userid);
+    List<User> getALLUserWithSort(String field, String order);
 }

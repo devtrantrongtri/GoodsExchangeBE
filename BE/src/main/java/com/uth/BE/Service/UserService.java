@@ -7,16 +7,16 @@ import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IUserService;
 import com.uth.BE.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,6 +73,8 @@ public class UserService implements IUserService {
 
         return userDTOs;
     }
+
+
 
     @Override
     public void createUser(User user) {
@@ -170,15 +172,22 @@ public class UserService implements IUserService {
         userRepository.deleteAll();
     }
 
-//    private UserDTO convertToDTO(User user) {
-//        // Chuyển đổi User sang UserDTO
-//        return UserDTO.builder()
-//                .userId(user.getUserId())
-//                .username(user.getUsername())
-//                .email(user.getEmail())
-//                .address(user.getAddress())
-//                .role(user.getRoles())
-//                .phoneNumber(user.getPhoneNumber())
-//                .build();
-//    }
+    // sort User theo thứ tự tăng hoặc giảm bởi field.
+    @Override
+    public List<User> getALLUserWithSort(String field, String order) {
+        // asc -> tăng, desc -> down
+        Sort.Direction sortDirection = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        // check filed is correctly
+        Field userField = ReflectionUtils.findField(User.class, field);
+
+        if (userField == null) {
+            throw new IllegalArgumentException("Field '" + field + "' does not exist in User class");
+//             return userRepository.findAll();
+        }
+        // Tạo đối tượng Sort với filed  và order
+        Sort sort = Sort.by(sortDirection, field);
+
+        return userRepository.findAll(sort);
+    }
+
 }

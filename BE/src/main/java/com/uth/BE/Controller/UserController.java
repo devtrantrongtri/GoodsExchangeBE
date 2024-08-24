@@ -151,4 +151,16 @@ public class UserController {
 
         }
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @GetMapping("/getAllSortedUsers/{field}/{order}")
+    public GlobalRes<List<User>> getAllSortedUsers(@PathVariable String field,@PathVariable String order) {
+        List<User> users = userService.getALLUserWithSort(field,order);
+        if (users != null && !users.isEmpty()) {
+            return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
+        } else {
+            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
+        }
+    }
+
 }
