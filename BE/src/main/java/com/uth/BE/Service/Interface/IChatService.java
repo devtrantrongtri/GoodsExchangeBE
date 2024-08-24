@@ -1,8 +1,7 @@
 package com.uth.BE.Service.Interface;
 
 import com.uth.BE.Entity.ChatMessage;
-import com.uth.BE.dto.ChatMessageDTO;
-import org.w3c.dom.Text;
+import com.uth.BE.dto.req.ChatMessageDTO;
 
 import java.util.List;
 

@@ -3,13 +3,15 @@ package com.uth.BE.Controller;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.Interface.*;
-import com.uth.BE.dto.UserDTO;
+import com.uth.BE.dto.req.UserDTO;
+import com.uth.BE.dto.req.UserPaginationRequest;
 import com.uth.BE.dto.res.GlobalRes;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -160,6 +162,23 @@ public class UserController {
             return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
         } else {
             return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
+        }
+    }
+//totalPages lấy dùng cho lastPage
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @GetMapping("/getAllUsersWithPaginationAndSort")
+    public GlobalRes<Page<User>> getAllUsersWithPaginationAndSort(
+            @Valid @RequestBody UserPaginationRequest request) {
+        try {
+            Page<User> usersPage = userService.getAllUsersWithPaginationAndSort(
+                    request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
+            if (usersPage.hasContent()) {
+                return new GlobalRes<>(HttpStatus.OK.value(), "success", usersPage);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT.value(), "No users found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Invalid parameters: " + e.getMessage());
         }
     }
 

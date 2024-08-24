@@ -5,12 +5,9 @@ import com.uth.BE.Entity.UserProfile;
 import com.uth.BE.Repository.UserProfileRepository;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IUserService;
-import com.uth.BE.dto.UserDTO;
+import com.uth.BE.dto.req.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -188,6 +185,13 @@ public class UserService implements IUserService {
         Sort sort = Sort.by(sortDirection, field);
 
         return userRepository.findAll(sort);
+    }
+
+    @Override
+    public Page<User> getAllUsersWithPaginationAndSort(int pageNumber, int pageSize, String direction, String properties) {
+        Sort.Direction directed = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, directed, properties);
+        return userRepository.findAll(pageable);
     }
 
 }
