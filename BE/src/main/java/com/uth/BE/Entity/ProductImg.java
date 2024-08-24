@@ -14,7 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "productimg")
+@Table(name = "product_img")
 public class ProductImg {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
