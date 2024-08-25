@@ -12,7 +12,8 @@ public class SecurityEndpoints {
             "category/get_all_categories",
             "category/getAllCategoriesWithPaginationAndSort",
             "/productimgs/**",
-
+            "/reports/**",
+            "/reviews/**",
     };
 
     public static final String[] ADMIN_ENDPOINTS = {
