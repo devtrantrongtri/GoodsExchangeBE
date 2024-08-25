@@ -10,6 +10,7 @@ public class SecurityEndpoints {
             "/comments/**",
             "/notifications/**",
             "category/get_all_categories",
+            "category/getAllCategoriesWithPaginationAndSort",
             "/productimgs/**",
 
     };

@@ -6,11 +6,14 @@ import com.uth.BE.Entity.User;
 import com.uth.BE.Service.Interface.ICategoryService;
 import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.Service.Interface.IUserService;
+import com.uth.BE.dto.req.ProductPaginationRequest;
 import com.uth.BE.dto.res.GlobalRes;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -300,5 +303,22 @@ public class ProductController {
             return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to search products: " + e.getMessage());
         }
     }
+
+    @GetMapping("/getAllProductsWithPaginationAndSort")
+    public GlobalRes<Page<Product>> getAllProductsWithPaginationAndSort(
+            @Valid @RequestBody ProductPaginationRequest request) {
+        try {
+            Page<Product> productsPage = productService.getAllProductsWithPaginationAndSort(
+                    request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
+            if (productsPage.hasContent()) {
+                return new GlobalRes<>(HttpStatus.OK.value(), "success", productsPage);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT.value(), "No products found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Invalid parameters: " + e.getMessage());
+        }
+    }
+
 
 }
