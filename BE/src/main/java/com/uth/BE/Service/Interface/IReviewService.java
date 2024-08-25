@@ -7,8 +7,12 @@ import java.util.Optional;
 
 public interface IReviewService {
     public List<Review> findAll();
-    public void save(Review review);
-    public void delete(int reviewId);
-    public Optional <Review> findById(int reviewId);
-    public void update(Review review);
+    public Review save(Review review);
+    public void delete(int id);
+    public Optional <Review> findById(int id);
+    public Review update(Review review);
+
+    List<Review> getReportByUser(int userID);
+
+    List<Review> getReviewByUserName(String username);
 }

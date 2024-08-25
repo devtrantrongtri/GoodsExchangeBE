@@ -2,7 +2,9 @@ package com.uth.BE.Service;
 
 
 import com.uth.BE.Entity.Review;
+import com.uth.BE.Entity.User;
 import com.uth.BE.Repository.ReviewRepository;
+import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,40 +17,67 @@ import java.util.Optional;
 public class ReviewService implements IReviewService {
 
     @Autowired
-    private ReviewRepository repo;
+    private ReviewRepository reviewRepository;
 
-    public ReviewService(ReviewRepository repo){
+    @Autowired
+    private UserRepository userRepository;
+
+
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository){
         super();
-        this.repo=repo;
+        this.reviewRepository=reviewRepository;
+        this.userRepository=userRepository;
     }
-
     @Override
     public List<Review> findAll() {
-        return repo.findAll();
+        return reviewRepository.findAll();
     }
 
     @Override
-    public void save(Review review) {
-        repo.save(review);
+    public Review save(Review review) {
+        return reviewRepository.save(review);
     }
 
     @Override
-    public void delete(int reviewId) {
-        repo.deleteById(reviewId);
+    public void delete(int id) {
+        reviewRepository.deleteById(id);
     }
 
     @Override
-    public Optional<Review> findById(int reviewId) {
-        Optional<Review> review = Optional.ofNullable(repo.findById(reviewId).orElse(null));
-        return  review;    }
+    public Optional<Review> findById(int id) {
+        Optional<Review> review = Optional.ofNullable(reviewRepository.findById(id).orElse(null));
+        return review;
+    }
 
     @Override
-    public void update(Review review) {
-        Review exiting = repo.findById(review.getReview_id()).orElse(null);
-        exiting.setReview_text(review.getReview_text());
+    public Review update(Review review) {
+        Review exiting = reviewRepository.findById(review.getReviewId()).orElse(null);
         exiting.setRating(review.getRating());
-        exiting.setCreated_at(new Timestamp(review.getCreated_at().getTime()));
-        exiting.setStatus(review.getStatus());
-        repo.save(exiting);
+        exiting.setReviewText(review.getReviewText());
+        exiting.setCreatedAt(new Timestamp(review.getCreatedAt().getTime()));
+        return reviewRepository.save(exiting);
     }
+
+
+    @Override
+    public List<Review> getReportByUser(int userID) {
+        User u = userRepository.findById(userID).orElse(null);
+        if (u != null) {
+            return reviewRepository.findByUser(u);
+        } else {
+            return List.of();
+        }
+    }
+
+    @Override
+    public List<Review> getReviewByUserName(String username) {
+        User u = userRepository.findByUsername(username).orElse(null);
+        if (u != null) {
+            return reviewRepository.findByUser(u);
+        } else {
+            return List.of();
+        }
+    }
+
+
 }
