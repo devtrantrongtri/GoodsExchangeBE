@@ -3,8 +3,8 @@ package com.uth.BE.Controller;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.Interface.*;
+import com.uth.BE.dto.req.PaginationRequest;
 import com.uth.BE.dto.req.UserDTO;
-import com.uth.BE.dto.req.UserPaginationRequest;
 import com.uth.BE.dto.res.GlobalRes;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,7 +168,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/getAllUsersWithPaginationAndSort")
     public GlobalRes<Page<User>> getAllUsersWithPaginationAndSort(
-            @Valid @RequestBody UserPaginationRequest request) {
+            @Valid @RequestBody PaginationRequest request) {
         try {
             Page<User> usersPage = userService.getAllUsersWithPaginationAndSort(
                     request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());

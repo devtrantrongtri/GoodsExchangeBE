@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductPaginationRequest {
+public class PaginationRequest {
 
     @Min(value = 0, message = "Offset must be greater than or equal to 0")
     private int offset;

@@ -6,7 +6,7 @@ import com.uth.BE.Entity.User;
 import com.uth.BE.Service.Interface.ICategoryService;
 import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.Service.Interface.IUserService;
-import com.uth.BE.dto.req.ProductPaginationRequest;
+import com.uth.BE.dto.req.PaginationRequest;
 import com.uth.BE.dto.res.GlobalRes;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -306,7 +306,7 @@ public class ProductController {
 
     @GetMapping("/getAllProductsWithPaginationAndSort")
     public GlobalRes<Page<Product>> getAllProductsWithPaginationAndSort(
-            @Valid @RequestBody ProductPaginationRequest request) {
+            @Valid @RequestBody PaginationRequest request) {
         try {
             Page<Product> productsPage = productService.getAllProductsWithPaginationAndSort(
                     request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
