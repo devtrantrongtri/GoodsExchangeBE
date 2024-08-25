@@ -5,8 +5,11 @@ import com.uth.BE.Entity.User;
 import com.uth.BE.Service.NotificationService;
 import com.uth.BE.Service.UserService;
 import com.uth.BE.dto.req.NotificationReq;
+import com.uth.BE.dto.req.PaginationRequest;
 import com.uth.BE.dto.res.GlobalRes;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +32,7 @@ public class NotificationController {
     }
 
     @PostMapping()
-    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public GlobalRes<NotificationReq> createNotification(@RequestBody NotificationReq notificationReq) {
         Notification notification = new Notification(notificationReq.getMessage());
         Optional<User> user = userService.getUserById(notificationReq.getUserId());
@@ -45,6 +48,7 @@ public class NotificationController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public GlobalRes<List<Notification>> getAllNotification() {
         List<Notification> notificationList = notificationService.getAll();
         if (!notificationList.isEmpty()) {
@@ -80,16 +84,31 @@ public class NotificationController {
         return new GlobalRes<>(HttpStatus.OK, "All notifications read successfully", notificationList);
     }
 
-    @PostMapping("/update")
-    public GlobalRes<Notification> updateNotification(Notification notification) {
-        Notification c = notificationService.update(notification);
-        if(c != null){
-            return new GlobalRes<>(HttpStatus.OK, "Successfully update this notification", null);
+    @PutMapping("/update/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public GlobalRes<Notification> updateNotification(@PathVariable("id") int notificationId, @RequestBody NotificationReq notificationReq) {
+        Optional<Notification> existingNotification = notificationService.findById(notificationId);
+
+        if (existingNotification.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "Notification not found", null);
         }
-        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update this notification", null);
+
+        Notification updatedNotification = existingNotification.get();
+        updatedNotification.setMessage(notificationReq.getMessage());
+        updatedNotification.setUser(userService.getUserById(notificationReq.getUserId()).orElse(null));
+
+        Notification savedNotification = notificationService.update(updatedNotification);
+
+        if (savedNotification != null) {
+            return new GlobalRes<>(HttpStatus.OK, "Successfully updated the notification", savedNotification);
+        }
+
+        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update the notification", null);
     }
 
+
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public GlobalRes<Notification> deleteNotification(@PathVariable("id") int id) {
         try {
             notificationService.delete(id);
@@ -107,6 +126,45 @@ public class NotificationController {
             return new GlobalRes<>(HttpStatus.OK, "Successfully Set Read", null);
         } catch (Exception e) {
             return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed Set Read", null);
+        }
+    }
+
+    @GetMapping("/sort/{field}/{order}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    private GlobalRes<List<Notification>> getCommentsWithSort(@PathVariable("field") String field, @PathVariable("order") String order) {
+        List<Notification> notifications = notificationService.findCommentWithSort(field, order);
+        if (notifications.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "No comments found", null);
+        }
+        return new GlobalRes<>(HttpStatus.OK, "All comments read successfully", notifications);
+    }
+
+    @GetMapping("/page/{offset}/{size}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    private GlobalRes<Page<Notification>> getCommentsWithPage(@PathVariable("offset") int offset, @PathVariable("size") int size) {
+        Page<Notification> notifications = notificationService.findCommentWithPage(offset,size);
+        if (notifications.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "No comments found", null);
+        }
+        return new GlobalRes<>(HttpStatus.OK, "All comments read successfully", notifications);
+    }
+
+    @GetMapping("/sortAndPage")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    private GlobalRes<Page<Notification>> getCommentsWithSortAndPage(@Valid @RequestBody PaginationRequest req) {
+        try {
+            Page<Notification> notificationPage = notificationService.findCommentWithPageAndSort(
+                    req.getOffset(),
+                    req.getPageSize(),
+                    req.getField(),
+                    req.getOrder()
+            );
+            if (notificationPage.getTotalElements() > 0) {
+                return new GlobalRes<>(HttpStatus.OK, "All comments read successfully", notificationPage);
+            }
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "No comments found", null);
+        } catch (IllegalArgumentException e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST, e.getMessage(), null);
         }
     }
 }

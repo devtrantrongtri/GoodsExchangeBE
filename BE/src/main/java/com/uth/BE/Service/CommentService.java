@@ -8,7 +8,11 @@ import com.uth.BE.Repository.ProductRepository;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -54,6 +58,7 @@ public class CommentService implements ICommentService {
     @Override
     public Comment update(Comment comment) {
         Comment exiting = commentRepo.findById(comment.getCommentId()).orElse(null);
+        assert exiting != null;
         exiting.setCommentText(comment.getCommentText());
         exiting.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         return commentRepo.save(exiting);
@@ -94,5 +99,28 @@ public class CommentService implements ICommentService {
             throw new IllegalArgumentException("Keyword must not be null or empty");
         }
         return commentRepo.findByTextContains(keyword);
+    }
+
+    @Override
+    public List<Comment> findCommentWithSort(String field, String order) {
+        if (ReflectionUtils.findField(Comment.class, field) == null) {
+            throw new IllegalArgumentException("Invalid field name: " + field);
+        }
+
+        return commentRepo.findAll(Sort.by(order.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, field));
+    }
+
+    @Override
+    public Page<Comment> findCommentWithPage(int offset, int size) {
+        return commentRepo.findAll(PageRequest.of(offset,size));
+    }
+
+    @Override
+    public Page<Comment> findCommentWithPageAndSort(int offset, int size, String field, String order) {
+        if (ReflectionUtils.findField(Comment.class, field) == null) {
+            throw new IllegalArgumentException("Invalid field name: " + field);
+        }
+
+        return commentRepo.findAll(PageRequest.of(offset,size).withSort(Sort.by(order.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, field)));
     }
 }

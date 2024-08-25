@@ -7,14 +7,13 @@ public class SecurityEndpoints {
             "/auth/authenticate",
             "products/**",
             "/auth/authenticate", // login
-            "/comments/**",
-            "/notifications/**",
             "category/get_all_categories",
             "category/getAllCategoriesWithPaginationAndSort",
             "/productimgs/**",
             "/reports/**",
             "/reviews/**",
-            "/userProfiles/**"
+            "/userProfiles/**",
+            "/comments/post/**"
     };
 
     public static final String[] ADMIN_ENDPOINTS = {
@@ -33,6 +32,8 @@ public class SecurityEndpoints {
     public static final String[] CLIENT_ENDPOINTS = {
             "/chat/between/**",
             "user/**",
+            "/comments/**",
+            "/notifications/**",
 
     };
 }
