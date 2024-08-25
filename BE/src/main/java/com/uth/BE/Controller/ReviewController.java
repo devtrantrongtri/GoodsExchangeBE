@@ -32,20 +32,37 @@ public class ReviewController {
 
     @PostMapping()
     public GlobalRes<Review> createReview(@RequestBody ReviewReq reviewReq) {
-        Review rv = new Review(reviewReq.getReviewText(), reviewReq.getRating());
-        Optional<Product> product = productService.getProductById(reviewReq.getProductID());
-        Optional<User> user = userService.getUserById(reviewReq.getUserID());
-        rv.setProduct(product.orElse(null));
-        rv.setUser(user.orElse(null));
+        // Tìm kiếm Product và User theo ID
+        Optional<Product> productOpt = productService.getProductById(reviewReq.getProductID());
+        Optional<User> userOpt = userService.getUserById(reviewReq.getUserID());
 
-        Review savedReview = reviewService.save(rv);
-
-        if (savedReview != null) {
-            return new GlobalRes<>(HttpStatus.CREATED, "Successfully create this review", null);
+        // Kiểm tra nếu Product không tồn tại
+        if (!productOpt.isPresent()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", null);
         }
 
-        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed create this review", null);
+        // Kiểm tra nếu User không tồn tại
+        if (!userOpt.isPresent()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
+        }
+
+        // Tạo Review mới với Product và User đã tìm thấy
+        Review rv = new Review(reviewReq.getReviewText(), reviewReq.getRating());
+        rv.setProduct(productOpt.get());
+        rv.setUser(userOpt.get());
+
+        // Lưu Review vào cơ sở dữ liệu
+        Review savedReview = reviewService.save(rv);
+
+        // Kiểm tra nếu Review đã được lưu thành công
+        if (savedReview != null) {
+            return new GlobalRes<>(HttpStatus.CREATED, "Successfully created the review", savedReview);
+        }
+
+        // Trả về phản hồi nếu việc lưu Review không thành công
+        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to create the review", null);
     }
+
 
     @GetMapping("/{id}")
     public GlobalRes<Optional<Review>> findReviewById(@PathVariable int id) {

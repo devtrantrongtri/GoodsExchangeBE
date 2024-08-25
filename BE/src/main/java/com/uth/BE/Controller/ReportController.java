@@ -31,20 +31,37 @@ public class ReportController {
 
     @PostMapping()
     public GlobalRes<Report> createReport(@RequestBody ReportReq reportReq) {
-        Report rp = new Report(reportReq.getReportReason(), reportReq.getReportTitle(), reportReq.getReportImg());
-        Optional<Product> product = productService.getProductById(reportReq.getProductId());
-        Optional<User> user = userService.getUserById(reportReq.getReportBy());
-        rp.setProduct(product.orElse(null));
-        rp.setReportedBy(user.orElse(null));
+        // Tìm kiếm Product và User theo ID
+        Optional<Product> productOpt = productService.getProductById(reportReq.getProductId());
+        Optional<User> userOpt = userService.getUserById(reportReq.getReportBy());
 
-        Report savedReport = reportService.save(rp);
-
-        if (savedReport != null) {
-            return new GlobalRes<>(HttpStatus.CREATED, "Successfully create this report", rp);
+        // Kiểm tra nếu Product không tồn tại
+        if (!productOpt.isPresent()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", null);
         }
 
-        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed create this report", null);
+        // Kiểm tra nếu User không tồn tại
+        if (!userOpt.isPresent()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
+        }
+
+        // Tạo Report mới với Product và User đã tìm thấy
+        Report rp = new Report(reportReq.getReportReason(), reportReq.getReportTitle(), reportReq.getReportImg());
+        rp.setProduct(productOpt.get());
+        rp.setReportedBy(userOpt.get());
+
+        // Lưu Report vào cơ sở dữ liệu
+        Report savedReport = reportService.save(rp);
+
+        // Kiểm tra nếu Report đã được lưu thành công
+        if (savedReport != null) {
+            return new GlobalRes<>(HttpStatus.CREATED, "Successfully created the report", savedReport);
+        }
+
+        // Trả về phản hồi nếu việc lưu Report không thành công
+        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to create the report", null);
     }
+
 
     @GetMapping()
     public GlobalRes<List<Report>> readAllReport() {
