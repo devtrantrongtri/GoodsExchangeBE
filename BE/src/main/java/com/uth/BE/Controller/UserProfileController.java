@@ -2,15 +2,20 @@ package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.UserProfile;
 import com.uth.BE.Entity.model.CustomUserDetails;
+import com.uth.BE.Service.Interface.IStoreService;
 import com.uth.BE.Service.Interface.IUserProfileService;
 import com.uth.BE.dto.res.GlobalRes;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +24,14 @@ import java.util.Optional;
 public class UserProfileController {
 
     private final IUserProfileService userProfileService;
+    private final IStoreService storeService;
 
     @Autowired
-    public UserProfileController(IUserProfileService userProfileService) {
+    public UserProfileController(IUserProfileService userProfileService, IStoreService storeService) {
         this.userProfileService = userProfileService;
+        this.storeService = storeService;
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping
     public GlobalRes<List<UserProfile>> getAllUserProfiles() {
@@ -48,6 +56,7 @@ public class UserProfileController {
     }
 
     // only get for their-self profile
+    @PreAuthorize("hasAnyRole('CLIENT')")
     @GetMapping("/userProfile")
     public GlobalRes<Optional<UserProfile>> getUserProfileTheir() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -63,6 +72,7 @@ public class UserProfileController {
             return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
     }
+    @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
     @PostMapping
     public GlobalRes<String> addUserProfile(@RequestBody UserProfile userProfile) {
         try {
@@ -78,7 +88,7 @@ public class UserProfileController {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
     @PutMapping("/update")
     public GlobalRes<String> updateUserProfile(@RequestBody UserProfile updatedUserProfile) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -116,7 +126,7 @@ public class UserProfileController {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+    @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
     @DeleteMapping("/{id}")
     public GlobalRes<String> deleteUserProfile(@PathVariable int id) {
         try {
@@ -129,6 +139,104 @@ public class UserProfileController {
             }
         } catch (Exception e) {
             return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete UserProfile", null);
+        }
+    }
+    @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
+    @PostMapping("/image")
+    public GlobalRes<String> uploadProfileImage(@RequestParam("file") MultipartFile file) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomUserDetails customUserDetails) {
+            Integer userId = customUserDetails.getUserId();
+            UserProfile userProfile = userProfileService.getUserProfileById(userId)
+                    .orElseThrow(() -> new RuntimeException("UserProfile not found"));
+
+            String currentImage = userProfile.getProfileImageUrl();
+            try {
+                if (storeService.saveFile(file,currentImage)) {
+                    UserProfile userProfiles = userProfileService.getUserProfileById(userId)
+                            .orElseThrow(() -> new RuntimeException("UserProfile not found"));
+                    userProfile.setProfileImageUrl(file.getOriginalFilename());
+                    userProfileService.updateUserProfile(userProfiles);
+                    return new GlobalRes<>(HttpStatus.OK, "Profile image uploaded successfully", null);
+                } else {
+                    return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload profile image", null);
+                }
+            } catch (Exception e) {
+                return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload profile image: " + e.getMessage(), null);
+            }
+        } else {
+            return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+    }
+//    @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
+//    @PutMapping("/image")
+//    public GlobalRes<String> updateProfileImage(@RequestParam("file") MultipartFile file) {
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        if (principal instanceof CustomUserDetails customUserDetails) {
+//            Integer userId = customUserDetails.getUserId();
+//            try {
+//                // Create a unique filename
+//                String originalFilename = file.getOriginalFilename();
+//                String extension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf('.')) : "";
+//                String uniqueFilename = userId + "_" + System.currentTimeMillis() + extension;
+//
+//                if (storeService.saveFile(file, uniqueFilename)) {
+//                    UserProfile userProfile = userProfileService.getUserProfileById(userId)
+//                            .orElseThrow(() -> new RuntimeException("UserProfile not found"));
+//                    userProfile.setProfileImageUrl(file.getOriginalFilename());
+//                    userProfileService.updateUserProfile(userProfile);
+//                    return new GlobalRes<>(HttpStatus.OK, "Profile image updated successfully", null);
+//                } else {
+//                    return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update profile image", null);
+//                }
+//            } catch (Exception e) {
+//                return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update profile image: " + e.getMessage(), null);
+//            }
+//        } else {
+//            return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Unauthorized");
+//        }
+//    }
+    @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
+    @DeleteMapping("/image")
+    public GlobalRes<String> deleteProfileImage() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomUserDetails customUserDetails) {
+            Integer userId = customUserDetails.getUserId();
+            try {
+                UserProfile userProfile = userProfileService.getUserProfileById(userId)
+                        .orElseThrow(() -> new RuntimeException("UserProfile not found"));
+                String filename = userProfile.getProfileImageUrl();
+                if (filename != null && !filename.isEmpty()) {
+                    if (storeService.deleteFile(filename)) {
+                        userProfile.setProfileImageUrl(null);
+                        userProfileService.updateUserProfile(userProfile);
+                        return new GlobalRes<>(HttpStatus.OK, "Profile image deleted successfully", null);
+                    } else {
+                        return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete profile image", null);
+                    }
+                } else {
+                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "No profile image to delete", null);
+                }
+            } catch (Exception e) {
+                return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete profile image: " + e.getMessage(), null);
+            }
+        } else {
+            return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        }
+    }
+
+    @GetMapping("/image/{filename:.+}")
+    public GlobalRes<byte[]> getProfileImage(@PathVariable String filename) {
+        try {
+            Resource file = storeService.loadFile(filename);
+            if (file.exists() && file.isReadable()) {
+                byte[] fileContent = Files.readAllBytes(file.getFile().toPath());
+                return new GlobalRes<>(HttpStatus.OK, "File retrieved successfully", fileContent);
+            } else {
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "File not found");
+            }
+        } catch (IOException e) {
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve file: " + e.getMessage(), null);
         }
     }
 }

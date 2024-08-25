@@ -14,6 +14,7 @@ public class SecurityEndpoints {
             "/productimgs/**",
             "/reports/**",
             "/reviews/**",
+            "/userProfiles/**"
     };
 
     public static final String[] ADMIN_ENDPOINTS = {
@@ -32,6 +33,6 @@ public class SecurityEndpoints {
     public static final String[] CLIENT_ENDPOINTS = {
             "/chat/between/**",
             "user/**",
-            "/userProfiles/**"
+
     };
 }

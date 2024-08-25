@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
+import java.nio.file.NoSuchFileException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -21,5 +24,16 @@ public class GlobalExceptionHandler {
             errors.append(fieldName).append(": ").append(errorMessage).append(" x ; ");
         });
         return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Validation failed: " + errors.toString());
+    }
+    @ExceptionHandler(IOException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public GlobalRes<String> handleIOException(IOException ex) {
+        return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "File operation failed: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(NoSuchFileException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public GlobalRes<String> handleNoSuchFileException(NoSuchFileException ex) {
+        return new GlobalRes<>(HttpStatus.NOT_FOUND.value(), "File not found: " + ex.getMessage());
     }
 }
