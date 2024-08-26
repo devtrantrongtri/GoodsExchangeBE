@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.uth.BE.Entity.Product;
-
+import org.springframework.util.ReflectionUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +61,7 @@ public class ProductImgService implements IProductImgService {
 
 
     private final String uploadDir = "C:/Users/dell/Desktop/img";
-
+    @Override
     public String saveProductImage(MultipartFile file, Product product) throws IOException {
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         File directory = new File(uploadDir);
@@ -79,7 +82,7 @@ public class ProductImgService implements IProductImgService {
         return "File uploaded successfully: " + fileName;
     }
 
-
+    @Override
     public byte[] getProductImage(String fileName) throws IOException {
         ProductImg productImg = productImgRepo.findByTitle(fileName)
                 .orElseThrow(() -> new RuntimeException("File not found"));
@@ -87,4 +90,18 @@ public class ProductImgService implements IProductImgService {
         Path filePath = Paths.get(productImg.getImgUrl());
         return Files.readAllBytes(filePath);
     }
+
+    public List<ProductImg> findProductImgWithSort(String field, String order) {
+        // Kiểm tra lại tên trường được truy xuất từ field
+        if (ReflectionUtils.findField(ProductImg.class, field) == null) {
+            throw new IllegalArgumentException("Invalid field name: " + field);
+        }
+        // Sort theo thứ tự asc hoặc desc
+        return productImgRepo.findAll(Sort.by(order.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, field));
+    }
+
+    public Page<ProductImg> findProductImgWithPage(int offset, int size) {
+        return productImgRepo.findAll(PageRequest.of(offset, size));
+    }
+
 }
