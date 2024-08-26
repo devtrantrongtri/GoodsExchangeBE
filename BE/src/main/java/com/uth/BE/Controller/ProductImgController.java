@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.data.domain.Page;
 import java.util.List;
 import java.util.Optional;
 import java.io.IOException;
@@ -92,11 +92,21 @@ public class ProductImgController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        String uploadImage = productImgService.saveProductImage(file);
+    public ResponseEntity<String> uploadImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("productId") Integer productId) throws IOException {
+
+        Optional<Product> product = productService.getProductById(productId);
+        if (!product.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Product not found with ID: " + productId);
+        }
+
+        String uploadImage = productImgService.saveProductImage(file, product.get());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
+
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> downloadImage(@PathVariable String fileName) throws IOException {
@@ -105,4 +115,27 @@ public class ProductImgController {
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(imageData);
     }
+
+    @GetMapping("/sort/{field}/{order}")
+    public GlobalRes<List<ProductImg>> getProductImgsWithSort(
+            @PathVariable("field") String field,
+            @PathVariable("order") String order) {
+        List<ProductImg> productImgs = productImgService.findProductImgWithSort(field, order);
+        if (productImgs.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "No product images found", null);
+        }
+        return new GlobalRes<>(HttpStatus.OK, "Product images retrieved successfully", productImgs);
+    }
+
+    @GetMapping("/page/{offset}/{size}")
+    public GlobalRes<Page<ProductImg>> getProductImgsWithPage(
+            @PathVariable("offset") int offset,
+            @PathVariable("size") int size) {
+        Page<ProductImg> productImgs = productImgService.findProductImgWithPage(offset, size);
+        if (productImgs.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "No product images found", null);
+        }
+        return new GlobalRes<>(HttpStatus.OK, "Product images retrieved successfully", productImgs);
+    }
+
 }

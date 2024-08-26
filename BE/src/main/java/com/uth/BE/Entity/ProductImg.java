@@ -36,7 +36,7 @@ public class ProductImg {
 
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
     public ProductImg() {
         super();
@@ -90,10 +90,10 @@ public class ProductImg {
     }
 
     public Timestamp getCreatedAt() {
-        return created_at;
+        return createdAt;
     }
 
     public void setCreatedAt(Timestamp created_at) {
-        this.created_at = created_at;
+        this.createdAt = created_at;
     }
 }
