@@ -1,6 +1,7 @@
 package com.uth.BE.Service.Interface;
 
 import com.uth.BE.Entity.ProductImg;
+import com.uth.BE.Entity.Product;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,7 +20,8 @@ public interface IProductImgService {
 
     public ProductImg update(ProductImg productImg);
 
-    public String saveProductImage(MultipartFile file) throws IOException;
+    public String saveProductImage(MultipartFile file, Product product) throws IOException;
 
     public byte[] getProductImage(String fileName) throws IOException;
+
 }

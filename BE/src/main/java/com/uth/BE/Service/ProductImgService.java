@@ -7,6 +7,7 @@ import com.uth.BE.Entity.model.FileExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import com.uth.BE.Entity.Product;
 
 
 import java.io.File;
@@ -56,26 +57,28 @@ public class ProductImgService implements IProductImgService {
     }
 
 
-    private final String uploadDir = "/path/to/your/localstore/";
+    private final String uploadDir = "C:/Users/dell/Desktop/img";
 
-    public String saveProductImage(MultipartFile file) throws IOException {
+    public String saveProductImage(MultipartFile file, Product product) throws IOException {
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         File directory = new File(uploadDir);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
-        Path filePath = Paths.get(uploadDir + fileName);
+        Path filePath = Paths.get(uploadDir, fileName);
         Files.write(filePath, file.getBytes());
 
         ProductImg productImg = new ProductImg();
         productImg.setTitle(fileName);
         productImg.setImgUrl(filePath.toString());
-        productImg.setFileExtension(FileExtension.valueOf(file.getContentType()));
+        productImg.setFileExtension(FileExtension.valueOf(fileName.substring(fileName.lastIndexOf(".") + 1).toUpperCase()));
+        productImg.setProduct(product);
         productImgRepo.save(productImg);
 
         return "File uploaded successfully: " + fileName;
     }
+
 
     public byte[] getProductImage(String fileName) throws IOException {
         ProductImg productImg = productImgRepo.findByTitle(fileName)

@@ -92,11 +92,21 @@ public class ProductImgController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) throws IOException {
-        String uploadImage = productImgService.saveProductImage(file);
+    public ResponseEntity<String> uploadImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("productId") Integer productId) throws IOException {
+
+        Optional<Product> product = productService.getProductById(productId);
+        if (!product.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Product not found with ID: " + productId);
+        }
+
+        String uploadImage = productImgService.saveProductImage(file, product.get());
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
+
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<byte[]> downloadImage(@PathVariable String fileName) throws IOException {
