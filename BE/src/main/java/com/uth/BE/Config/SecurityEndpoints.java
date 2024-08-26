@@ -10,6 +10,7 @@ public class SecurityEndpoints {
             "/comments/**",
             "/notifications/**",
             "category/get_all_categories",
+            "wishlist/**"
 
     };
 
@@ -29,6 +30,7 @@ public class SecurityEndpoints {
     public static final String[] CLIENT_ENDPOINTS = {
             "/chat/between/**",
             "user/**",
-            "/userProfiles/**"
+            "/userProfiles/**",
+
     };
 }
