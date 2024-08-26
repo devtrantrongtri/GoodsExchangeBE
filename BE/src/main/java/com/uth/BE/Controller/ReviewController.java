@@ -155,6 +155,7 @@ public class ReviewController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/getAllSortedReviews/{field}/{order}")
     public GlobalRes<List<Review>> getAllSortedReview(@PathVariable String field,@PathVariable String order) {
         List<Review> reviews = reviewService.getALLReviewWithSort(field,order);
@@ -165,7 +166,7 @@ public class ReviewController {
         }
     }
     //totalPages lấy dùng cho lastPage
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/getAllReviewsWithPaginationAndSort")
     public GlobalRes<Page<Review>> getAllReviewsWithPaginationAndSort(
             @Valid @RequestBody PaginationRequest request) {

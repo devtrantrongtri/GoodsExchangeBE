@@ -105,15 +105,6 @@ public class ReportController {
         return new GlobalRes<>(HttpStatus.OK, "All reports read successfully", rp);
     }
 
-//    @PutMapping("/updateReport")
-//    public GlobalRes<Report> updatedReport(@RequestBody Report report) {
-//        Report rp = reportService.update(report);
-//        if (rp != null) {
-//            return new GlobalRes<>(HttpStatus.OK, "Successfully update this report", null);
-//        }
-//        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update this report", null);
-//    }
-
 
     @PutMapping("/updateReport/{id}")
     public GlobalRes<Report> updateReport(@PathVariable("id") int Id, @RequestBody ReportReq reportReq) {
@@ -151,6 +142,7 @@ public class ReportController {
         return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update this report", null);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @DeleteMapping("/deleteReportById/{id}")
     public GlobalRes<Report> deleteReport(@PathVariable int id) {
         try{
@@ -162,6 +154,7 @@ public class ReportController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @PutMapping("/{id}/status")
     public GlobalRes<Optional> changeStatus(@PathVariable int id, @RequestParam String status) {
         try {
@@ -178,6 +171,7 @@ public class ReportController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/getAllSortedReports/{field}/{order}")
     public GlobalRes<List<Report>> getAllSortedReport(@PathVariable String field,@PathVariable String order) {
         List<Report> reports = reportService.getALLReportWithSort(field,order);
@@ -188,7 +182,7 @@ public class ReportController {
         }
     }
     //totalPages lấy dùng cho lastPage
-//    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/getAllReportsWithPaginationAndSort")
     public GlobalRes<Page<Report>> getAllReportsWithPaginationAndSort(
             @Valid @RequestBody PaginationRequest request) {
