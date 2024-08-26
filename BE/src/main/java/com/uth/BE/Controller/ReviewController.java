@@ -5,10 +5,15 @@ import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.Service.Interface.IReviewService;
 import com.uth.BE.Service.Interface.IUserService;
 import com.uth.BE.Service.ReviewService;
+import com.uth.BE.dto.req.PaginationRequest;
+import com.uth.BE.dto.req.ReportReq;
 import com.uth.BE.dto.req.ReviewReq;
 import com.uth.BE.dto.res.GlobalRes;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -103,15 +108,41 @@ public class ReviewController {
         return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed get all reviews", null);
     }
 
-//    @PutMapping("/updateReview")
-//    public GlobalRes<Review> updatedReview(@RequestBody Review review) {
-//        Review rv = reviewService.update(review);
-//        if (rv != null) {
-//            return new GlobalRes<>(HttpStatus.OK, "Successfully update this review", null);
-//        } else {
-//            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update this review", null);
-//        }
-//    }
+
+    @PutMapping("/updateReview/{id}")
+    public GlobalRes<Review> updateReview(@PathVariable("id") int Id, @RequestBody ReviewReq reviewReq) {
+        Optional<Review> existingReview = reviewService.findById(Id);
+
+        if (existingReview.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "review not found", null);
+        }
+
+        Review updateReview = existingReview.get();
+        updateReview.setRating(reviewReq.getRating());
+        updateReview.setReviewText(reviewReq.getReviewText());
+
+        Optional<User> user = userService.getUserById(reviewReq.getUserID());
+        Optional<Product> product = productService.getProductById(reviewReq.getProductID());
+
+        if (user.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
+        }
+
+        if (product.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", null);
+        }
+
+        updateReview.setUser(user.get());
+        updateReview.setProduct(product.get());
+
+        Review updatedReview = reviewService.update(updateReview);
+
+        if (updatedReview != null) {
+            return new GlobalRes<>(HttpStatus.OK, "Successfully updated this review", updatedReview);
+        }
+
+        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update this review", null);
+    }
 
     @DeleteMapping("/deleteReviewById/{id}")
     public GlobalRes<Review> deleteReview(@PathVariable int id) {
@@ -124,17 +155,31 @@ public class ReviewController {
         }
     }
 
-    @PutMapping("/updateReview/{id}")
-    public GlobalRes<Review> updateReport(@PathVariable int id, @RequestBody Review review) {
-        Optional<Review> reviewOptional = reviewService.findById(id);
-        if (reviewOptional.isPresent()) {
-            Review rv = reviewOptional.get();
-            rv.setRating(review.getRating());
-            rv.setReviewText(review.getReviewText());
-            Review update = reviewService.save(rv);
-
-            return new GlobalRes<>(HttpStatus.OK, "Successfully updated the review", update);
+    @GetMapping("/getAllSortedReviews/{field}/{order}")
+    public GlobalRes<List<Review>> getAllSortedReview(@PathVariable String field,@PathVariable String order) {
+        List<Review> reviews = reviewService.getALLReviewWithSort(field,order);
+        if (reviews != null && !reviews.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.OK,"success",reviews);
+        } else {
+            return new GlobalRes<>(HttpStatus.NO_CONTENT,"success");
         }
-        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update the review", null);
     }
+    //totalPages lấy dùng cho lastPage
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @GetMapping("/getAllReviewsWithPaginationAndSort")
+    public GlobalRes<Page<Review>> getAllReviewsWithPaginationAndSort(
+            @Valid @RequestBody PaginationRequest request) {
+        try {
+            Page<Review> reviewsPage = reviewService.getAllReviewsWithPaginationAndSort(
+                    request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
+            if (reviewsPage.hasContent()) {
+                return new GlobalRes<>(HttpStatus.OK.value(), "success", reviewsPage);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT.value(), "No reviews found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Invalid parameters: " + e.getMessage());
+        }
+    }
+
 }

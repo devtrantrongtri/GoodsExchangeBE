@@ -1,14 +1,21 @@
 package com.uth.BE.Service;
 
 import com.uth.BE.Entity.Report;
+import com.uth.BE.Entity.Review;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Entity.model.StatusReport;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IReportService;
 import com.uth.BE.Repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
@@ -88,6 +95,31 @@ public class ReportService implements IReportService{
             System.err.println("Error occurred while changing status report: " + e.getMessage());
         }
 
+    }
+
+    @Override
+    public List<Report> getALLReportWithSort(String field, String order) {
+        // asc -> tăng, desc -> down
+        Sort.Direction sortDirection = order.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        // check filed is correctly
+        Field reportField = ReflectionUtils.findField(Report.class, field);
+
+        if (reportField == null) {
+            throw new IllegalArgumentException("Field '" + field + "' does not exist in Report class");
+//             return reportRepository.findAll();
+        }
+        // Tạo đối tượng Sort với filed  và order
+        Sort sort = Sort.by(sortDirection, field);
+
+        return reportRepository.findAll(sort);
+    }
+
+
+    @Override
+    public Page<Report> getAllReportsWithPaginationAndSort(int pageNumber, int pageSize, String direction, String properties) {
+        Sort.Direction directed = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, directed, properties);
+        return reportRepository.findAll(pageable);
     }
 
 

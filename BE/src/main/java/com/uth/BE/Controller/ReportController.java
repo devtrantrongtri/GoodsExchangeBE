@@ -7,9 +7,13 @@ import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.Service.Interface.IReportService;
 import com.uth.BE.Service.Interface.IUserService;
 import com.uth.BE.Service.ReportService;
+import com.uth.BE.dto.req.CommentReq;
+import com.uth.BE.dto.req.PaginationRequest;
 import com.uth.BE.dto.req.ReportReq;
 import com.uth.BE.dto.res.GlobalRes;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -110,19 +114,41 @@ public class ReportController {
 //        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update this report", null);
 //    }
 
-    @PutMapping("/updateReport/{id}")
-    public GlobalRes<Report> updateReport(@PathVariable int id, @RequestBody Report report) {
-        Optional<Report> reportOptional = reportService.findById(id);
-        if (reportOptional.isPresent()) {
-            Report rp = reportOptional.get();
-            rp.setReportTitle(report.getReportTitle());
-            rp.setReportReason(report.getReportReason());
-            rp.setReportImg(report.getReportImg());
-            Report update = reportService.save(rp);
 
-            return new GlobalRes<>(HttpStatus.OK, "Successfully updated the report", update);
+    @PutMapping("/updateReport/{id}")
+    public GlobalRes<Report> updateReport(@PathVariable("id") int Id, @RequestBody ReportReq reportReq) {
+        Optional<Report> existingReport = reportService.findById(Id);
+
+        if (existingReport.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "Comment not found", null);
         }
-        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update the report", null);
+
+        Report updateReport = existingReport.get();
+        updateReport.setReportTitle(reportReq.getReportTitle());
+        updateReport.setReportReason(reportReq.getReportReason());
+        updateReport.setReportImg(reportReq.getReportImg());
+
+        Optional<User> user = userService.getUserById(reportReq.getReportBy());
+        Optional<Product> product = productService.getProductById(reportReq.getProductId());
+
+        if (user.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found", null);
+        }
+
+        if (product.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", null);
+        }
+
+        updateReport.setReportedBy(user.get());
+        updateReport.setProduct(product.get());
+
+        Report updatedReport = reportService.update(updateReport);
+
+        if (updatedReport != null) {
+            return new GlobalRes<>(HttpStatus.OK, "Successfully updated this report", updatedReport);
+        }
+
+        return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to update this report", null);
     }
 
     @DeleteMapping("/deleteReportById/{id}")
@@ -151,6 +177,35 @@ public class ReportController {
             return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update report status", null);
         }
     }
+
+    @GetMapping("/getAllSortedReports/{field}/{order}")
+    public GlobalRes<List<Report>> getAllSortedReport(@PathVariable String field,@PathVariable String order) {
+        List<Report> reports = reportService.getALLReportWithSort(field,order);
+        if (reports != null && !reports.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.OK,"success",reports);
+        } else {
+            return new GlobalRes<>(HttpStatus.NO_CONTENT,"success");
+        }
+    }
+    //totalPages lấy dùng cho lastPage
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @GetMapping("/getAllReportsWithPaginationAndSort")
+    public GlobalRes<Page<Report>> getAllReportsWithPaginationAndSort(
+            @Valid @RequestBody PaginationRequest request) {
+        try {
+            Page<Report> reportsPage = reportService.getAllReportsWithPaginationAndSort(
+                    request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
+            if (reportsPage.hasContent()) {
+                return new GlobalRes<>(HttpStatus.OK.value(), "success", reportsPage);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT.value(), "No reports found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Invalid parameters: " + e.getMessage());
+        }
+    }
+
+
 
 
 }
