@@ -3,13 +3,15 @@ package com.uth.BE.Controller;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.Interface.*;
-import com.uth.BE.dto.UserDTO;
+import com.uth.BE.dto.req.PaginationRequest;
+import com.uth.BE.dto.req.UserDTO;
 import com.uth.BE.dto.res.GlobalRes;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -151,4 +153,33 @@ public class UserController {
 
         }
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @GetMapping("/getAllSortedUsers/{field}/{order}")
+    public GlobalRes<List<User>> getAllSortedUsers(@PathVariable String field,@PathVariable String order) {
+        List<User> users = userService.getALLUserWithSort(field,order);
+        if (users != null && !users.isEmpty()) {
+            return new GlobalRes<List<User>>(HttpStatus.OK,"success",users);
+        } else {
+            return new GlobalRes<List<User>>(HttpStatus.NO_CONTENT,"success");
+        }
+    }
+//totalPages lấy dùng cho lastPage
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
+    @GetMapping("/getAllUsersWithPaginationAndSort")
+    public GlobalRes<Page<User>> getAllUsersWithPaginationAndSort(
+            @Valid @RequestBody PaginationRequest request) {
+        try {
+            Page<User> usersPage = userService.getAllUsersWithPaginationAndSort(
+                    request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
+            if (usersPage.hasContent()) {
+                return new GlobalRes<>(HttpStatus.OK.value(), "success", usersPage);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT.value(), "No users found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Invalid parameters: " + e.getMessage());
+        }
+    }
+
 }

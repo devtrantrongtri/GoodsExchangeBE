@@ -3,6 +3,9 @@ package com.uth.BE.Entity;
 import java.sql.Timestamp;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +15,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "comments")
 public class Comment {
@@ -31,15 +37,15 @@ public class Comment {
     @Column(name = "comment_text", columnDefinition = "TEXT", nullable = false)
     private String text;
 
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    //    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "create_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @CreationTimestamp
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
-    public Comment() {
-        super();
-    }
-
+    //    public Comment() {
+//        super();
+//    }
+//
     public Comment(String comment_text) {
         super();
         this.text = comment_text;
@@ -78,10 +84,10 @@ public class Comment {
     }
 
     public Timestamp getCreatedAt() {
-        return created_at;
+        return createdAt;
     }
 
     public void setCreatedAt(Timestamp created_at) {
-        this.created_at = created_at;
+        this.createdAt = created_at;
     }
 }

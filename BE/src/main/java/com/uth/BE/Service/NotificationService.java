@@ -1,5 +1,6 @@
 package com.uth.BE.Service;
 
+import com.uth.BE.Entity.Comment;
 import com.uth.BE.Entity.Notification;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Repository.CommentRepository;
@@ -7,8 +8,13 @@ import com.uth.BE.Repository.NotificationRepository;
 import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -88,5 +94,28 @@ public class NotificationService implements INotificationService {
         } else {
             return List.of();
         }
+    }
+
+    @Override
+    public List<Notification> findCommentWithSort(String field, String order) {
+        if (ReflectionUtils.findField(Comment.class, field) == null) {
+            throw new IllegalArgumentException("Invalid field name: " + field);
+        }
+
+        return notificationRepository.findAll(Sort.by(order.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, field));
+    }
+
+    @Override
+    public Page<Notification> findCommentWithPage(int offset, int size) {
+        return notificationRepository.findAll(PageRequest.of(offset,size));
+    }
+
+    @Override
+    public Page<Notification> findCommentWithPageAndSort(int offset, int size, String field, String order) {
+        if (ReflectionUtils.findField(Comment.class, field) == null) {
+            throw new IllegalArgumentException("Invalid field name: " + field);
+        }
+
+        return notificationRepository.findAll(PageRequest.of(offset,size).withSort(Sort.by(order.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, field)));
     }
 }

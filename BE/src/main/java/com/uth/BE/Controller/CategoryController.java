@@ -2,11 +2,14 @@ package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.Category;
 import com.uth.BE.Service.Interface.ICategoryService;
+import com.uth.BE.dto.req.CategoryPaginationRequest;
 import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import jakarta.validation.Valid;
+
 
 import java.util.List;
 import java.util.Map;
@@ -94,5 +97,22 @@ public class CategoryController {
             return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete category: " + e.getMessage());
         }
     }
+
+    @GetMapping("/getAllCategoriesWithPaginationAndSort")
+    public GlobalRes<Page<Category>> getAllCategoriesWithPaginationAndSort(
+            @Valid @RequestBody CategoryPaginationRequest request) {
+        try {
+            Page<Category> categoriesPage = categoryService.getAllCategoriesWithPaginationAndSort(
+                    request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
+            if (categoriesPage.hasContent()) {
+                return new GlobalRes<>(HttpStatus.OK.value(), "Categories retrieved successfully", categoriesPage);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT.value(), "No categories found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Invalid parameters: " + e.getMessage());
+        }
+    }
+
 
 }

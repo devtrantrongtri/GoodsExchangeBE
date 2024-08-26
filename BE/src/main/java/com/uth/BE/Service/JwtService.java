@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.xml.bind.DatatypeConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 @Service
 public class JwtService {
-    private  static final String SECRET = "A59EC87C99A9964DE28A7F3317D790F12B11D72A64C170E95DD0FECE41240B5082EFA2B146E15E0B90598DD23DA0E6A295B240EDAB6B03B3454C59D8460975B3";
+    @Value("${jwt.key}")
+    private String secret;
 //    private static final Long VALIDITY  = TimeUnit.HOURS.toMillis(24);
 private static final Long VALIDITY  = TimeUnit.MINUTES.toMillis(30); // 30 phuts
     // modified func to parseJwt to claims format.
@@ -44,7 +46,7 @@ private static final Long VALIDITY  = TimeUnit.MINUTES.toMillis(30); // 30 phuts
 
 // generate signed key, give the right form for key
     public SecretKey generateSecretKey() {
-        byte[] keyByte =  DatatypeConverter.parseHexBinary(SECRET);
+        byte[] keyByte =  DatatypeConverter.parseHexBinary(secret);
         return Keys.hmacShaKeyFor(keyByte);
 
     }

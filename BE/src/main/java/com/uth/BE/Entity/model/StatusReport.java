@@ -1,6 +1,6 @@
 package com.uth.BE.Entity.model;
 
-public enum StatusReview {
+public enum StatusReport {
     PENDING,
     RESOLVED,
     DISMISSED

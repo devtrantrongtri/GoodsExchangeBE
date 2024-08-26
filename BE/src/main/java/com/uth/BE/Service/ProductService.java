@@ -7,6 +7,7 @@ import com.uth.BE.Repository.ProductRepository;
 import com.uth.BE.Service.Interface.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -114,5 +115,12 @@ public class ProductService implements IProductService {
             System.err.println("Error occurred while searching products by price: " + e.getMessage());
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public Page<Product> getAllProductsWithPaginationAndSort(int pageNumber, int pageSize, String direction, String properties) {
+        Sort.Direction directed = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, directed, properties);
+        return productRepository.findAll(pageable);
     }
 }

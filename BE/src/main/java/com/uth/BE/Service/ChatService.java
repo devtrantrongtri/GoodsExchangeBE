@@ -4,13 +4,10 @@ import com.uth.BE.Entity.ChatMessage;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Repository.ChatMessageRepository;
 import com.uth.BE.Service.Interface.IChatService;
-import com.uth.BE.dto.ChatMessageDTO;
-import com.uth.BE.dto.UserDTO;
+import com.uth.BE.dto.req.ChatMessageDTO;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Text;
 
 import java.util.List;
-import java.util.Vector;
 import java.util.stream.Collectors;
 
 @Service

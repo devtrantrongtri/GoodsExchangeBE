@@ -2,15 +2,8 @@ package com.uth.BE.Entity;
 
 import java.sql.Timestamp;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.uth.BE.Entity.model.StatusReport;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -23,11 +16,11 @@ public class Report {
     private int report_id ;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "reported_by", nullable = false)
+    private User reportedBy;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id",nullable = false)
     private Product  product;
 
     @Column(name="report_title",columnDefinition = "TEXT", nullable = false)
@@ -39,10 +32,14 @@ public class Report {
     @Column(name = "report_img", columnDefinition = "TEXT", nullable = false)
     private String report_img;
 
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    //    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "report_date", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp report_date;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "ENUM('pending', 'resolved', 'dismissed') DEFAULT 'pending'")
+    private StatusReport status = StatusReport.PENDING;
 
     public Report() {
         super();
@@ -53,6 +50,14 @@ public class Report {
         this.report_reason = report_reason;
     }
 
+    public Report(String reportReason, String reportTitle, String reportImg) {
+        super();
+        this.report_reason=reportReason;
+        this.report_title=reportTitle;
+        this.report_img=reportImg;
+    }
+
+
     public int getReport_id() {
         return report_id;
     }
@@ -61,12 +66,12 @@ public class Report {
         this.report_id = report_id;
     }
 
-    public User getUser() {
-        return user;
+    public User getReportedBy() {
+        return reportedBy;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setReportedBy(User reportedBy) {
+        this.reportedBy = reportedBy;
     }
 
     public Product getProduct() {
@@ -77,27 +82,27 @@ public class Report {
         this.product = product;
     }
 
-    public String getReport_title() {
+    public String getReportTitle() {
         return report_title;
     }
 
-    public void setReport_title(String report_title) {
+    public void setReportTitle(String report_title) {
         this.report_title = report_title;
     }
 
-    public String getReport_reason() {
+    public String getReportReason() {
         return report_reason;
     }
 
-    public void setReport_reason(String report_reason) {
+    public void setReportReason(String report_reason) {
         this.report_reason = report_reason;
     }
 
-    public String getReport_img() {
+    public String getReportImg() {
         return report_img;
     }
 
-    public void setReport_img(String report_img) {
+    public void setReportImg(String report_img) {
         this.report_img = report_img;
     }
 
@@ -107,6 +112,14 @@ public class Report {
 
     public void setReport_date(Timestamp report_date) {
         this.report_date = report_date;
+    }
+
+    public StatusReport getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusReport status) {
+        this.status = status;
     }
 }
 

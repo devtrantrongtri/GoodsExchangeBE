@@ -1,4 +1,4 @@
-package com.uth.BE.dto;
+package com.uth.BE.dto.req;
 
 import com.uth.BE.Entity.model.MessageType;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

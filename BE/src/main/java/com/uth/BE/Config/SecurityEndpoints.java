@@ -7,11 +7,18 @@ public class SecurityEndpoints {
             "/auth/authenticate",
             "products/**",
             "/auth/authenticate", // login
-            "/comments/**",
-            "/notifications/**",
             "category/get_all_categories",
+<<<<<<< HEAD
             "wishlist/**"
 
+=======
+            "category/getAllCategoriesWithPaginationAndSort",
+            "/productimgs/**",
+            "/reports/**",
+            "/reviews/**",
+            "/userProfiles/**",
+            "/comments/post/**"
+>>>>>>> dcc5f629309b2342c0ff734678a7b571ebf2f6c6
     };
 
     public static final String[] ADMIN_ENDPOINTS = {
@@ -30,7 +37,12 @@ public class SecurityEndpoints {
     public static final String[] CLIENT_ENDPOINTS = {
             "/chat/between/**",
             "user/**",
+<<<<<<< HEAD
             "/userProfiles/**",
+=======
+            "/comments/**",
+            "/notifications/**",
+>>>>>>> dcc5f629309b2342c0ff734678a7b571ebf2f6c6
 
     };
 }

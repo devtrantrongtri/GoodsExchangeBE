@@ -1,9 +1,11 @@
 package com.uth.BE.Entity;
 
 //import com.uth.BE.Entity.model.Role;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
+//import com.fasterxml.jackson.annotation.;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,8 +29,9 @@ public class User {
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
-    @JsonIgnore
-    @JsonProperty(value = "password")
+
+//    @JsonIgnore
+    @JsonProperty(value = "password", access = Access.WRITE_ONLY)
     @Column(name = "pass", nullable = false)
     private String password;
 

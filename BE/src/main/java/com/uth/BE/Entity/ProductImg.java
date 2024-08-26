@@ -14,18 +14,18 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "productimg")
+@Table(name = "product_img")
 public class ProductImg {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "productimg_id")
-    private int productimg_id;
+    @Column(name = "id")
+    private int id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = true)
     private String title;
 
     @Column(name = "img_url", nullable = false)
@@ -49,12 +49,12 @@ public class ProductImg {
         this.file_extension = file_extension;
     }
 
-    public int getProductimgId() {
-        return productimg_id;
+    public int getId() {
+        return id;
     }
 
-    public void setProductimgId(int productimg_id) {
-        this.productimg_id = productimg_id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Product getProduct() {

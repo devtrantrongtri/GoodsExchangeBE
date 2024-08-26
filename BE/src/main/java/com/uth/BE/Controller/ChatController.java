@@ -2,7 +2,7 @@ package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.ChatMessage;
 import com.uth.BE.Service.ChatService;
-import com.uth.BE.dto.ChatMessageDTO;
+import com.uth.BE.dto.req.ChatMessageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
 import java.util.List;
 
 //@CrossOrigin(origins = "http://localhost:5173")
