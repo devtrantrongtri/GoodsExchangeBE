@@ -1,13 +1,12 @@
 package com.uth.BE.Service.Interface;
 
 import com.uth.BE.Entity.WishList;
-import com.uth.BE.Entity.Product;
 
 import java.util.Optional;
 
 public interface IWishlistService {
-    public WishList save(WishList wishList);
-    public WishList addProduct(Product product, WishList wishList);
-    public Optional<WishList> findById(int id);
-    public void delete(int id);
+    WishList save(WishList wishList);
+    WishList addProduct(Integer productId, Integer userId);
+    Optional<WishList> findById(int id);
+    void delete(int id);
 }

@@ -1,7 +1,6 @@
 package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.WishList;
-import com.uth.BE.Entity.Product;
 import com.uth.BE.Service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +15,8 @@ public class WishlistController {
     private WishlistService wishlistService;
 
     @PostMapping("/addWishlist")
-    public WishList addWishlist(@RequestBody WishList wishList) {
-        return wishlistService.save(wishList);
-    }
-
-    @PostMapping("/addProduct")
-    public WishList addProduct(@RequestBody Product product, @RequestParam int wishlistId) {
-        Optional<WishList> wishList = wishlistService.findById(wishlistId);
-        return wishList.map(wl -> wishlistService.addProduct(product, wl)).orElse(null);
+    public WishList addWishlist(@RequestParam Integer productId, @RequestParam Integer userId) {
+        return wishlistService.addProduct(productId, userId);
     }
 
     @GetMapping("/findWishlistById/{id}")
