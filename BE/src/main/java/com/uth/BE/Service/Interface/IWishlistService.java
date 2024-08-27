@@ -9,4 +9,6 @@ public interface IWishlistService {
     WishList addProduct(Integer productId, Integer userId);
     Optional<WishList> findById(int id);
     void delete(int id);
+
+    void createWishList(WishList wishList);
 }

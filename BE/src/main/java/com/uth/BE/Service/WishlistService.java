@@ -184,20 +184,15 @@ public class WishlistService implements IWishlistService {
 
     @Override
     public WishList addProduct(Integer productId, Integer userId) {
-        // Tìm sản phẩm và người dùng
         Optional<Product> product = productRepository.findById(productId);
         Optional<User> user = userRepository.findById(userId);
 
-        // Kiểm tra sự tồn tại của sản phẩm và người dùng
         if (product.isPresent() && user.isPresent()) {
-            // Tạo một wishlist mới hoặc lấy wishlist hiện tại
             WishList wishList = wishlistRepository.findById(userId).orElse(new WishList());
 
-            // Gán sản phẩm và người dùng cho wishlist
             wishList.setUser(user.get());
             wishList.setProduct(product.get());
 
-            // Lưu wishlist
             return wishlistRepository.save(wishList);
         } else {
             throw new RuntimeException("Product or User not found");
@@ -212,5 +207,14 @@ public class WishlistService implements IWishlistService {
     @Override
     public void delete(int id) {
         wishlistRepository.deleteById(id);
+    }
+
+    @Override
+    public void createWishList(WishList wishList) {
+        try {
+            wishlistRepository.save(wishList);
+        } catch (Exception e) {
+            System.err.println("Error occurred while creating wish list: " + e.getMessage());
+        }
     }
 }
