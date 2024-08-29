@@ -2,6 +2,9 @@
 package com.uth.BE.Entity;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,6 +30,21 @@ public class WishList {
     @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
     private Timestamp createdAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "wishlist_product",
+            joinColumns = @JoinColumn(name = "wish_list_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> products = new HashSet<>();
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
 
     // Getters and setters
     public int getId() {
