@@ -1,12 +1,13 @@
 server:
   port: 8080
   servlet:
-    context-path : /api
-spring :
+    context-path: /api
+
+spring:
   datasource:
     url: "jdbc:mysql://localhost:3308/GoodsExchange"
     username: root
-    password : 123456
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -17,21 +18,21 @@ spring :
   servlet:
     multipart:
       max-file-size: 10MB
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
     url: /api-docs
   api-docs:
     path: /api-docs
-Logging:
+
+logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
 store:
   file-path: "/home/nit/Public/Store" # thế bằng nơi muốn lưu.
 
-
-
 jwt:
-  key : "A59EC87C99A9964DE28A7F3317D790F12B11D72A64C170E95DD0FECE41240B5082EFA2B146E15E0B90598DD23DA0E6A295B240EDAB6B03B3454C59D8460975B3"
-#  click to seen swagger Ui : http://localhost:8080/api/swagger-ui/index.html
+  key: "A59EC87C99A9964DE28A7F3317D790F12B11D72A64C170E95DD0FECE41240B5082EFA2B146E15E0B90598DD23DA0E6A295B240EDAB6B03B3454C59D8460975B3"

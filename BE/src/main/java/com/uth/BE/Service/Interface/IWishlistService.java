@@ -5,13 +5,9 @@ import com.uth.BE.Entity.WishList;
 import java.util.Optional;
 
 public interface IWishlistService {
-    public WishList save(WishList wishList);
-
-//    public WishList addProduct(Product product, WishList wishList);
-
-//    public Set<Product> findAllProduct(WishList wishList);
-
-    public Optional<WishList> findById(int id);
-
-    public void delete(int id);
+    WishList save(WishList wishList);
+    WishList addProduct(Integer productId, Integer userId);
+    Optional<WishList> findById(int id);
+    void delete(int id);
+    void createWishList(WishList wishList);
 }
