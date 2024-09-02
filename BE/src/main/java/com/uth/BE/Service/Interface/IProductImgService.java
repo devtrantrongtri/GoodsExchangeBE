@@ -29,4 +29,6 @@ public interface IProductImgService {
 
     Page<ProductImg> findProductImgWithPage(int offset, int size);
 
+    public List<String> getUrlsProduct(int productId);
+
 }

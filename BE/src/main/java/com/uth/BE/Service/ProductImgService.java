@@ -104,4 +104,9 @@ public class ProductImgService implements IProductImgService {
         return productImgRepo.findAll(PageRequest.of(offset, size));
     }
 
+    @Override
+    public List<String> getUrlsProduct(int productId) {
+        return productImgRepo.findImageUrlsByProductId(productId);
+    }
+
 }
