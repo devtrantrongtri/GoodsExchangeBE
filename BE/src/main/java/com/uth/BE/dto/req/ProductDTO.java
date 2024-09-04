@@ -26,6 +26,9 @@ public class ProductDTO {
         this.imageUrls = imageUrls;
         this.create_at = create_at;
     }
+
+    public ProductDTO() {
+    }
 }
 
 //    // Getters

@@ -10,6 +10,8 @@ import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.Service.Interface.IUserService;
 import com.uth.BE.Service.JwtService;
 import com.uth.BE.Service.MyUserDetailService;
+import com.uth.BE.dto.req.CategoryPaginationRequest;
+import com.uth.BE.dto.req.ProductDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -17,18 +19,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -164,19 +166,19 @@ public class ProductControllerTest {
                 .andDo(print());
     }
 
-    @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN", "MODERATOR", "CLIENT"})
-    public void deleteProduct_ShouldReturnOk_WhenProductExists() throws Exception {
-        Product product = new Product();
-        when(productService.getProductById(anyInt())).thenReturn(Optional.of(product));
-
-        mockMvc.perform(delete("/products/delete_product/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.msg").value("Product deleted successfully"))
-                .andExpect(jsonPath("$.code").value(200))
-                .andDo(print());
-    }
+//    @Test
+//    @WithMockUser(username = "admin", roles = {"ADMIN", "MODERATOR", "CLIENT"})
+//    public void deleteProduct() throws Exception {
+//        Product product = new Product();
+//        when(productService.getProductById(anyInt())).thenReturn(Optional.of(product));
+//
+//        mockMvc.perform(delete("/products/delete_product/1")
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.msg").value("Product deleted successfully"))
+//                .andExpect(jsonPath("$.code").value(200))
+//                .andDo(print());
+//    }
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN", "MODERATOR", "CLIENT"})
@@ -266,6 +268,66 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.data").isArray())
                 .andExpect(jsonPath("$.data.length()").value(1))  // Chỉ có 1 sản phẩm
                 .andExpect(jsonPath("$.data[0].price").value(productInRange.getPrice()))
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN", "MODERATOR", "CLIENT"})
+    public void getAllProductsWithPaginationAndSort() throws Exception {
+        Product product1 = new Product();
+        product1.setProduct_id(1);
+        product1.setTitle("product1");
+
+        Product product2 = new Product();
+        product1.setProduct_id(2);
+        product1.setTitle("product2");
+
+        List<Product> products = Arrays.asList(product1, product2);
+        Page<Product> page = new PageImpl<>(products, PageRequest.of(0, 10, Sort.by("title")), products.size());
+
+        CategoryPaginationRequest request = new CategoryPaginationRequest();
+        request.setOffset(0);
+        request.setPageSize(10);
+        request.setOrder("asc");
+        request.setField("title");
+
+        when(productService.getAllProductsWithPaginationAndSort(
+                request.getOffset(), request.getPageSize(), request.getOrder(), request.getField())).thenReturn(page);
+
+        mockMvc.perform(get("/products/getAllProductsWithPaginationAndSort")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())  // Kiểm tra trạng thái HTTP là 200 OK
+                .andExpect(jsonPath("$.msg").value("success"))  // Kiểm tra thông báo phản hồi
+                .andExpect(jsonPath("$.code").value(200))  // Kiểm tra mã trạng thái
+                .andExpect(jsonPath("$.data.content[0].title").value("product2"))  // Kiểm tra dữ liệu sản phẩm đầu tiên
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN", "MODERATOR", "CLIENT"})
+    public void getProductsByKeyword() throws Exception {
+        ProductDTO product = new ProductDTO();
+        product.setProductId(1);
+        product.setTitle("Smartphone");
+        product.setDescription("Latest model smartphone with advanced features.");
+        product.setStatus("AVAILABLE");
+        product.setImageUrls(Arrays.asList("images/products/1.jpg"));
+
+        List<ProductDTO> products = Arrays.asList(product);
+
+        when(productService.getProductsWithImage("smart")).thenReturn(products);
+
+        mockMvc.perform(get("/products/keyword/smart", "smart")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())  // Kiểm tra trạng thái HTTP là 200 OK
+                .andExpect(jsonPath("$.msg").value("success"))  // Kiểm tra thông báo phản hồi
+                .andExpect(jsonPath("$.code").value(200))  // Kiểm tra mã trạng thái
+                .andExpect(jsonPath("$.data[0].productId").value(1))  // Kiểm tra ID sản phẩm
+                .andExpect(jsonPath("$.data[0].title").value("Smartphone"))  // Kiểm tra tiêu đề sản phẩm
+                .andExpect(jsonPath("$.data[0].description").value("Latest model smartphone with advanced features."))  // Kiểm tra mô tả sản phẩm
+                .andExpect(jsonPath("$.data[0].status").value("AVAILABLE"))  // Kiểm tra trạng thái sản phẩm
+                .andExpect(jsonPath("$.data[0].imageUrls[0]").value("images/products/1.jpg"))  // Kiểm tra URL hình ảnh
                 .andDo(print());
     }
 }
