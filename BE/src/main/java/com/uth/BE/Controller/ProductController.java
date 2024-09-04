@@ -58,14 +58,14 @@ public class ProductController {
     }
 
     @PostMapping("/create_product")
-    public GlobalRes<String> createProduct(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<GlobalRes<String>> createProduct(@RequestBody Map<String, Object> payload) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
             Object categoryIdObj = payload.get("category_id");
             if (!(categoryIdObj instanceof Integer)) {
-                return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id format");
+                return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id format"), HttpStatus.BAD_REQUEST);
             }
             Integer categoryId = (Integer) categoryIdObj;
             Optional<Category> categoryOptional = Optional.ofNullable(categoryService.findById(categoryId));
@@ -84,40 +84,41 @@ public class ProductController {
                 if (titleObj instanceof String) {
                     product.setTitle((String) titleObj);
                 } else {
-                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid title format");
+                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid title format"), HttpStatus.BAD_REQUEST);
                 }
 
                 Object descriptionObj = payload.get("description");
                 if (descriptionObj instanceof String) {
                     product.setDescription((String) descriptionObj);
                 } else {
-                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid description format");
+                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid description format"), HttpStatus.BAD_REQUEST);
                 }
 
                 Object priceObj = payload.get("price");
                 if (priceObj instanceof Double || priceObj instanceof Integer) {
                     product.setPrice(BigDecimal.valueOf(((Number) priceObj).doubleValue()));
                 } else {
-                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid price format");
+                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid price format"), HttpStatus.BAD_REQUEST);
                 }
 
                 Object statusObj = payload.get("status");
                 if (statusObj instanceof String) {
                     product.setStatus((String) statusObj);
                 } else {
-                    return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid status format");
+                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid status format"), HttpStatus.BAD_REQUEST);
                 }
 
                 productService.createProduct(product);
-                return new GlobalRes<>(HttpStatus.CREATED, "Product created successfully");
+                return new ResponseEntity<>(new GlobalRes<>(HttpStatus.CREATED, "Product created successfully"), HttpStatus.CREATED);
             } else {
-                return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id");
+                return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id"), HttpStatus.BAD_REQUEST);
             }
 
         } catch (Exception e) {
-            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create product: " + e.getMessage());
+            return new ResponseEntity<>(new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create product: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @PutMapping("/update_product/{id}")
     public GlobalRes<String> updateProduct(@PathVariable int id, @RequestBody Map<String, Object> payload) {
