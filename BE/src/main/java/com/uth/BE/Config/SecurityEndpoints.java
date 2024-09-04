@@ -5,7 +5,7 @@ public class SecurityEndpoints {
             "/user/sign-up",  // register
             "/user/getAllUser",
             "/auth/authenticate",
-            "products/**",
+            "/products/**",
             "/auth/authenticate", // login
             "category/get_all_categories",
 <<<<<<< HEAD
