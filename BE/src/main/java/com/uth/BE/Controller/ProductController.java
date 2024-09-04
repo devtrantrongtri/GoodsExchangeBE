@@ -7,6 +7,7 @@ import com.uth.BE.Service.Interface.ICategoryService;
 import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.Service.Interface.IUserService;
 import com.uth.BE.dto.req.PaginationRequest;
+import com.uth.BE.dto.req.ProductDTO;
 import com.uth.BE.dto.res.GlobalRes;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -320,4 +321,15 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/keyword/{keyword}")
+    public GlobalRes<List<ProductDTO>> getProductsByKeyword(@PathVariable("keyword") String keyword) {
+        List<ProductDTO> products = productService.getProductsWithImage(keyword);
+        return new GlobalRes<>(HttpStatus.OK.value(), "success", products);
+    }
+
+    @GetMapping("/with-images")
+    public GlobalRes<List<ProductDTO>> getAllProductsWithImages() {
+        List<ProductDTO> products = productService.getAllProductsWithImage();
+        return new GlobalRes<>(HttpStatus.OK.value(), "success", products);
+    }
 }

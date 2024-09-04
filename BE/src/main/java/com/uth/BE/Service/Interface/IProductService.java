@@ -3,6 +3,7 @@ package com.uth.BE.Service.Interface;
 import com.uth.BE.Entity.Category;
 import com.uth.BE.Entity.Product;
 import com.uth.BE.Entity.User;
+import com.uth.BE.dto.req.ProductDTO;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
@@ -21,4 +22,6 @@ public interface IProductService {
     List<Product> searchProductsByTitle(String title);
     List<Product> searchProductsByPrice(BigDecimal minPrice, BigDecimal maxPrice);
     Page<Product> getAllProductsWithPaginationAndSort(int pageNumber, int pageSize, String direction, String properties);
+    List<ProductDTO> getProductsWithImage(String keyword);
+    List<ProductDTO> getAllProductsWithImage();
 }
