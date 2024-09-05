@@ -19,4 +19,7 @@ public class ChatMessageDTO {
     private String content;
     private MessageType messageType;
     private LocalDateTime createAt;
+
+    public ChatMessageDTO(int messageId, int sender, int recipient, String content, String text, LocalDateTime of) {
+    }
 }
