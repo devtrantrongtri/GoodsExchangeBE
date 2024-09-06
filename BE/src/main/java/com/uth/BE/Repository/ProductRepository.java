@@ -6,6 +6,8 @@ import com.uth.BE.Entity.Product;
 
 import com.uth.BE.Entity.User;
 import com.uth.BE.dto.req.ProductDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,5 +31,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT new com.uth.BE.dto.req.ProductDTO(p.product_id, p.title, p.description, p.price, p.status,null,p.created_at) " +
             "FROM Product p")
     List<ProductDTO> findAllProducts();
+
+    @Query("SELECT p FROM Product p WHERE p.title LIKE %:keyword% OR p.description LIKE %:keyword%")
+    Page<Product> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+
+
 }
 

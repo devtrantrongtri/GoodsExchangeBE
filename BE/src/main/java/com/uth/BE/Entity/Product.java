@@ -1,21 +1,14 @@
 package com.uth.BE.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
+import java.util.Collection;
+import java.util.List;
 
 
 @Entity
@@ -95,6 +88,10 @@ public class Product {
         return title;
     }
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ProductImg> productImgs;
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -129,5 +126,14 @@ public class Product {
 
     public void setCreated_at(Timestamp created_at) {
         this.created_at = created_at;
+    }
+
+    // Getters and setters
+    public List<ProductImg> getProductImgs() {
+        return productImgs;
+    }
+
+    public void setProductImgs(List<ProductImg> productImgs) {
+        this.productImgs = productImgs;
     }
 }

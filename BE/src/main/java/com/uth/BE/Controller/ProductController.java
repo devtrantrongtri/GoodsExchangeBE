@@ -333,4 +333,40 @@ public class ProductController {
         List<ProductDTO> products = productService.getAllProductsWithImage();
         return new GlobalRes<>(HttpStatus.OK.value(), "success", products);
     }
+
+    @GetMapping("/getProductsWithPaginationAndSort/{keyword}")
+    public GlobalRes<Page<ProductDTO>> getProductsByKeywordWithPaginationAndSort(
+            @PathVariable("keyword") String keyword,
+            @Valid @RequestBody PaginationRequest request) {
+        try {
+            Page<ProductDTO> productsPage = productService.getProductsByKeywordWithPaginationAndSort(
+                    keyword, request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
+            if (productsPage.hasContent()) {
+                return new GlobalRes<>(HttpStatus.OK.value(), "success", productsPage);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT.value(), "No products found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Invalid parameter: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/getAllProductsWithImagesWithSortAndPaging")
+    public GlobalRes<Page<ProductDTO>> getAllProductsWithImagesWithSortAndPaging(
+            @Valid @RequestBody PaginationRequest request) {
+        try {
+            Page<ProductDTO> productsPage = productService.getAllProductsWithImagesWithSortAndPaging(
+                    request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());
+            if (productsPage.hasContent()) {
+                return new GlobalRes<>(HttpStatus.OK.value(), "success", productsPage);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT.value(), "No products found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST.value(), "Invalid parameter: " + e.getMessage());
+        }
+    }
+
+
+
 }

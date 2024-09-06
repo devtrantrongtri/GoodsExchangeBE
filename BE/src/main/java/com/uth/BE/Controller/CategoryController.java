@@ -3,6 +3,7 @@ package com.uth.BE.Controller;
 import com.uth.BE.Entity.Category;
 import com.uth.BE.Service.Interface.ICategoryService;
 import com.uth.BE.dto.req.CategoryPaginationRequest;
+import com.uth.BE.dto.req.PaginationRequest;
 import com.uth.BE.dto.res.GlobalRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,7 +101,7 @@ public class CategoryController {
 
     @GetMapping("/getAllCategoriesWithPaginationAndSort")
     public GlobalRes<Page<Category>> getAllCategoriesWithPaginationAndSort(
-            @Valid @RequestBody CategoryPaginationRequest request) {
+            @Valid @RequestBody PaginationRequest request) {
         try {
             Page<Category> categoriesPage = categoryService.getAllCategoriesWithPaginationAndSort(
                     request.getOffset(), request.getPageSize(), request.getOrder(), request.getField());

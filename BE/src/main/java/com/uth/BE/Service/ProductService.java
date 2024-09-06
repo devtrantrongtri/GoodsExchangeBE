@@ -2,6 +2,7 @@ package com.uth.BE.Service;
 
 import com.uth.BE.Entity.Category;
 import com.uth.BE.Entity.Product;
+import com.uth.BE.Entity.ProductImg;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Repository.ProductImgRepository;
 import com.uth.BE.Repository.ProductRepository;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -147,4 +149,58 @@ public class ProductService implements IProductService {
         }
         return products;
     }
+
+    @Override
+    public Page<ProductDTO> getProductsByKeywordWithPaginationAndSort(String keyword, int pageNumber, int pageSize, String direction, String properties) {
+        Sort.Direction directed = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, directed, properties);
+
+        Page<Product> productsPage = productRepository.findByKeyword(keyword, pageable);
+
+        return productsPage.map(product -> {
+            List<String> imageUrls = product.getProductImgs().stream()
+                    .map(ProductImg::getImgUrl)
+                    .collect(Collectors.toList());
+
+            return new ProductDTO(
+                    product.getProduct_id(),
+                    product.getTitle(),
+                    product.getDescription(),
+                    product.getPrice(),
+                    product.getStatus(),
+                    imageUrls,
+                    product.getCreated_at()
+            );
+        });
+    }
+
+    @Override
+    public Page<ProductDTO> getAllProductsWithImagesWithSortAndPaging(int pageNumber, int pageSize, String direction, String properties) {
+        Sort.Direction directed = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, directed, properties);
+
+        // Lấy Page<Product> từ repository
+        Page<Product> productsPage = productRepository.findAll(pageable);
+
+        // Chuyển đổi từ Product sang ProductDTO và thêm ảnh
+        return productsPage.map(product -> {
+            List<String> imageUrls = productImgRepository.findImageUrlsByProductId(product.getProduct_id());
+
+            return new ProductDTO(
+                    product.getProduct_id(),
+                    product.getTitle(),
+                    product.getDescription(),
+                    product.getPrice(),
+                    product.getStatus(),
+                    imageUrls,
+                    product.getCreated_at()
+            );
+        });
+    }
+
+
+
+
+
+
 }
