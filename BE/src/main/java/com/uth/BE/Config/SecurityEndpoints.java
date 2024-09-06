@@ -64,7 +64,8 @@ public class SecurityEndpoints {
             "/reviews/**",
             "/userProfiles/**",
             "/comments/post/**",
-            "wishlist/**"
+            "wishlist/**",
+            "/swagger/**"
     };
 
     public static final String[] ADMIN_ENDPOINTS = {
