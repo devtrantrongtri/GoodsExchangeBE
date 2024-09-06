@@ -19,7 +19,7 @@ public class JwtService {
     @Value("${jwt.key}")
     private String secret;
 //    private static final Long VALIDITY  = TimeUnit.HOURS.toMillis(24);
-private static final Long VALIDITY  = TimeUnit.MINUTES.toMillis(30); // 30 phuts
+private static final Long VALIDITY  = TimeUnit.MINUTES.toMillis(300000); // 30 phuts
     // modified func to parseJwt to claims format.
     private Claims getClaims(String jwt) {
         return Jwts.parser()
