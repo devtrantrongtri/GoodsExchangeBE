@@ -93,19 +93,19 @@ public class WishlistService implements IWishlistService {
         return wishlistRepository.findAll();
     }
 
-public void updateWishList(Integer wishListId, Integer newProductId) {
-    if (newProductId == null) {
-        throw new IllegalArgumentException("Product ID cannot be null");
+    public void updateWishList(Integer wishListId, Integer newProductId) {
+        if (newProductId == null) {
+            throw new IllegalArgumentException("Product ID cannot be null");
+        }
+
+        WishList wishList = wishlistRepository.findById(wishListId)
+                .orElseThrow(() -> new RuntimeException("WishList not found"));
+        Product newProduct = productRepository.findById(newProductId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        wishList.setProduct(newProduct);
+        wishlistRepository.save(wishList);
     }
-
-    WishList wishList = wishlistRepository.findById(wishListId)
-            .orElseThrow(() -> new RuntimeException("WishList not found"));
-    Product newProduct = productRepository.findById(newProductId)
-            .orElseThrow(() -> new RuntimeException("Product not found"));
-
-    wishList.setProduct(newProduct);
-    wishlistRepository.save(wishList);
-}
 
     public void addProductToWishList(int userId, int productId) {
         // Tìm User và Product
