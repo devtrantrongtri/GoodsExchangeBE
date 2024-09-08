@@ -1,5 +1,6 @@
 package com.uth.BE.Controller;
 
+import com.uth.BE.Entity.User;
 import com.uth.BE.Entity.UserProfile;
 import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.Interface.IStoreService;
@@ -90,7 +91,7 @@ public class UserProfileController {
 
     @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
     @PutMapping("/update")
-    public GlobalRes<String> updateUserProfile(@RequestBody UserProfile updatedUserProfile) {
+    public GlobalRes<UserProfile> updateUserProfile(@RequestBody UserProfile updatedUserProfile) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof CustomUserDetails customUserDetails) {
             Integer userId = customUserDetails.getUserId();
@@ -98,7 +99,7 @@ public class UserProfileController {
                 Optional<UserProfile> existingUserProfileOpt = userProfileService.getUserProfileById(userId);
                 if (existingUserProfileOpt.isPresent()) {
                     UserProfile existingUserProfile = existingUserProfileOpt.get();
-
+                    User existingUser = existingUserProfile.getUser();
                     // Update fields as necessary
                     if (updatedUserProfile.getFirstName() != null) {
                         existingUserProfile.setFirstName(updatedUserProfile.getFirstName());
@@ -112,9 +113,18 @@ public class UserProfileController {
                     if (updatedUserProfile.getProfileImageUrl() != null) {
                         existingUserProfile.setProfileImageUrl(updatedUserProfile.getProfileImageUrl());
                     }
-
+                    // Cập nhật User
+                    if (updatedUserProfile.getUser().getEmail() != null) {
+                        existingUser.setEmail(updatedUserProfile.getUser().getEmail());
+                    }
+                    if (updatedUserProfile.getUser().getPhoneNumber() != null) {
+                        existingUser.setPhoneNumber(updatedUserProfile.getUser().getPhoneNumber());
+                    }
+                    if (updatedUserProfile.getUser().getAddress() != null) {
+                        existingUser.setAddress(updatedUserProfile.getUser().getAddress());
+                    }
                     userProfileService.updateUserProfile(existingUserProfile);
-                    return new GlobalRes<>(HttpStatus.OK, "UserProfile updated successfully", null);
+                    return new GlobalRes<>(HttpStatus.OK, "UserProfile updated successfully", existingUserProfile);
                 } else {
                     return new GlobalRes<>(HttpStatus.NOT_FOUND, "UserProfile not found", null);
                 }
