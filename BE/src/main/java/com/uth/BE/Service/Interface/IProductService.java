@@ -26,4 +26,6 @@ public interface IProductService {
     List<ProductDTO> getAllProductsWithImage();
     Page<ProductDTO> getProductsByKeywordWithPaginationAndSort(String keyword, int pageNumber, int pageSize, String direction, String properties);
     Page<ProductDTO> getAllProductsWithImagesWithSortAndPaging(int pageNumber, int pageSize, String direction, String properties);
+    ProductDTO getProductDetail(int productId);
+    List<ProductDTO> getAllProductsByUsername(String username);
 }

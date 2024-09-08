@@ -368,5 +368,24 @@ public class ProductController {
     }
 
 
+    @GetMapping("getProductDetail/{productID}")
+    public GlobalRes<Optional<ProductDTO>> getProductDetail(@PathVariable int productID) {
+        ProductDTO productDetail = productService.getProductDetail(productID);
 
+        if (productDetail != null) {
+            return new GlobalRes<>(HttpStatus.OK, "Product found", Optional.of(productDetail));
+        } else {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", Optional.empty());
+        }
+    }
+    @GetMapping("getAllProductByUsername/{username}")
+    public GlobalRes<Optional<List<ProductDTO>>> getAllProductByUsername(@PathVariable String username) {
+        List<ProductDTO> products = productService.getAllProductsByUsername(username);
+
+        if (products != null) {
+            return new GlobalRes<>(HttpStatus.OK, "Product found", Optional.of(products));
+        } else {
+            return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", Optional.empty());
+        }
+    }
 }

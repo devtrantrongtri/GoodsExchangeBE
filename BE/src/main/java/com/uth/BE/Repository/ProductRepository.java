@@ -21,6 +21,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findBySeller(Optional<User> seller);
+    List<Product> findBySeller(User seller);
     List<Product> findByCategory(Category category);
     List<Product> findByTitleContaining(String title);
     List<Product> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);

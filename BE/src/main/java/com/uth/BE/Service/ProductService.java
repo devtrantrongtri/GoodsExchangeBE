@@ -6,6 +6,7 @@ import com.uth.BE.Entity.ProductImg;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Repository.ProductImgRepository;
 import com.uth.BE.Repository.ProductRepository;
+import com.uth.BE.Repository.UserRepository;
 import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.dto.req.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,13 @@ import java.util.stream.Collectors;
 public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final ProductImgRepository productImgRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ProductImgRepository productImgRepository) {
+    public ProductService(ProductRepository productRepository, ProductImgRepository productImgRepository,UserRepository userRepository) {
         this.productRepository = productRepository;
         this.productImgRepository = productImgRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -198,8 +201,77 @@ public class ProductService implements IProductService {
         });
     }
 
+    @Override
+    public ProductDTO getProductDetail(int productId) {
+        try {
+            // Lấy thông tin sản phẩm từ productRepository
+            Optional<Product> optionalProduct = productRepository.findById(productId);
+            if (optionalProduct.isPresent()) {
+                Product product = optionalProduct.get();
 
+                // Lấy danh sách hình ảnh từ productImgRepository
+                List<String> imageUrls = productImgRepository.findImageUrlsByProductId(product.getProduct_id());
 
+                // Tạo đối tượng ProductDTO và gán dữ liệu
+                ProductDTO productDTO = new ProductDTO(
+                        product.getProduct_id(),
+                        product.getTitle(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getStatus(),
+                        imageUrls,
+                        product.getCreated_at()
+                );
+
+                return productDTO;
+            } else {
+                return null;  // Nếu không tìm thấy sản phẩm, trả về null
+            }
+        } catch (Exception e) {
+            System.err.println("Error occurred while fetching product detail: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<ProductDTO> getAllProductsByUsername(String username) {
+        // Tìm kiếm user theo username
+        Optional<User> user = userRepository.findByUsername(username);
+
+        // Kiểm tra nếu user có tồn tại
+        if (user.isPresent()) {
+            // Tìm kiếm sản phẩm của user đó
+            List<Product> products = productRepository.findBySeller(user.get());
+
+            // Khởi tạo danh sách ProductDTO
+            List<ProductDTO> productDTOList = new ArrayList<>();
+
+            // Duyệt qua từng sản phẩm và chuyển đổi thành ProductDTO
+            for (Product product : products) {
+                // Lấy danh sách image URLs từ ProductImgRepository
+                List<String> imageUrls = productImgRepository.findImageUrlsByProductId(product.getProduct_id());
+
+                // Tạo ProductDTO mới và set các thuộc tính
+                ProductDTO productDTO = new ProductDTO();
+                productDTO.setTitle(product.getTitle());
+                productDTO.setDescription(product.getDescription());
+                productDTO.setPrice(product.getPrice());
+                productDTO.setStatus(product.getStatus());
+                productDTO.setImageUrls(imageUrls);
+                productDTO.setCreate_at(product.getCreated_at());
+                productDTO.setProductId(product.getProduct_id());
+
+                // Thêm ProductDTO vào danh sách
+                productDTOList.add(productDTO);
+            }
+
+            // Trả về danh sách ProductDTO
+            return productDTOList;
+        } else {
+            // Trả về danh sách rỗng nếu user không tồn tại
+            return new ArrayList<>();
+        }
+    }
 
 
 
