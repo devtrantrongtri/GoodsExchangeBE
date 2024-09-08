@@ -351,7 +351,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/getAllProductsWithImagesWithSortAndPaging")
+    @PostMapping("/getAllProductsWithImagesWithSortAndPaging")
     public GlobalRes<Page<ProductDTO>> getAllProductsWithImagesWithSortAndPaging(
             @Valid @RequestBody PaginationRequest request) {
         try {

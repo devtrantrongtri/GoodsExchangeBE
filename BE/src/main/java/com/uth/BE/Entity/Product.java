@@ -44,7 +44,7 @@ public class Product {
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
 
     public Product() {
@@ -121,11 +121,11 @@ public class Product {
     }
 
     public Timestamp getCreated_at() {
-        return created_at;
+        return createdAt;
     }
 
     public void setCreated_at(Timestamp created_at) {
-        this.created_at = created_at;
+        this.createdAt = created_at;
     }
 
     // Getters and setters
