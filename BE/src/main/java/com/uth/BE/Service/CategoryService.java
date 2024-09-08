@@ -4,7 +4,10 @@ import com.uth.BE.Entity.Category;
 import com.uth.BE.Repository.CategoryRepository;
 import com.uth.BE.Service.Interface.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -77,4 +80,12 @@ public class CategoryService implements ICategoryService {
     public Category findById(int id) {
         return categoryRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public Page<Category> getAllCategoriesWithPaginationAndSort(int pageNumber, int pageSize, String direction, String properties) {
+        Sort.Direction directed = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, directed, properties);
+        return categoryRepository.findAll(pageable);
+    }
+
 }

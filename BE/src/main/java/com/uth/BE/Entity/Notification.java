@@ -9,12 +9,18 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "notifications")
 public class Notification {
@@ -34,14 +40,14 @@ public class Notification {
     @Column(name = "is_read")
     private boolean is_read = false;
 
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    //    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "create_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
     private Timestamp created_at;
 
-    public Notification() {
-        super();
-    }
+//    public Notification() {
+//        super();
+//    }
 
     public Notification(String message) {
         super();

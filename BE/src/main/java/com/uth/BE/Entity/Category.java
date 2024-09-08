@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
     private int categoryId;
 
@@ -35,5 +35,13 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setCategoryID(int categoryId){
+        this.categoryId = categoryId;
+    }
+
+    public int getCategoryID(){
+        return this.categoryId;
     }
 }

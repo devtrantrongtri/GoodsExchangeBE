@@ -1,36 +1,32 @@
 package com.uth.BE.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-
+import java.util.Collection;
+import java.util.List;
 
 
 @Entity
 @Table(name = "products")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     private int product_id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "seller_id")
+    @ManyToOne
+    @JoinColumn(name = "seller_id", referencedColumnName = "user_id", nullable = false)
+    @JsonIgnore
     private User seller;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id")
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnore
     private Category category;
 
     @Column(name = "title", nullable = false)
@@ -48,7 +44,7 @@ public class Product {
 //    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "created_at", columnDefinition = "TIMESTAMP")
     @CreationTimestamp
-    private Timestamp created_at;
+    private Timestamp createdAt;
 
 
     public Product() {
@@ -92,6 +88,10 @@ public class Product {
         return title;
     }
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ProductImg> productImgs;
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -121,10 +121,19 @@ public class Product {
     }
 
     public Timestamp getCreated_at() {
-        return created_at;
+        return createdAt;
     }
 
     public void setCreated_at(Timestamp created_at) {
-        this.created_at = created_at;
+        this.createdAt = created_at;
+    }
+
+    // Getters and setters
+    public List<ProductImg> getProductImgs() {
+        return productImgs;
+    }
+
+    public void setProductImgs(List<ProductImg> productImgs) {
+        this.productImgs = productImgs;
     }
 }

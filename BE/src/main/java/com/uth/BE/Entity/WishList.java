@@ -1,14 +1,19 @@
+
 package com.uth.BE.Entity;
+
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.sql.Timestamp;
-
 @Entity
-@Table(name = "wish_list")
+@Table(name = "wish_list", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "product_id"})
+})
 public class WishList {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,20 +27,26 @@ public class WishList {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     @CreationTimestamp
     private Timestamp createdAt;
 
-    public WishList() {
-        super();
+    @ManyToMany
+    @JoinTable(
+            name = "wishlist_product",
+            joinColumns = @JoinColumn(name = "wish_list_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private Set<Product> products = new HashSet<>();
+    public Set<Product> getProducts() {
+        return products;
     }
 
-    public WishList(User user, Product product) {
-        this.user = user;
-        this.product = product;
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
 
-    // Getters and Setters
+    // Getters and setters
     public int getId() {
         return id;
     }
