@@ -173,7 +173,8 @@ public class ProductService implements IProductService {
                     product.getPrice(),
                     product.getStatus(),
                     imageUrls,
-                    product.getCreated_at()
+                    product.getCreated_at(),
+                    product.getSeller()
             );
         });
     }
@@ -198,7 +199,8 @@ public class ProductService implements IProductService {
                     product.getPrice(),
                     product.getStatus(),
                     imageUrls,
-                    product.getCreated_at()
+                    product.getCreated_at(),
+                    product.getSeller()
             );
         });
     }
@@ -223,7 +225,8 @@ public class ProductService implements IProductService {
                         product.getPrice(),
                         product.getStatus(),
                         imageUrls,
-                        product.getCreated_at()
+                        product.getCreated_at(),
+                        product.getSeller()
                 );
 
                 return productDTO;

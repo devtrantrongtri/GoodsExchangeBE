@@ -1,6 +1,7 @@
 package com.uth.BE.dto.req;
 
 import com.uth.BE.Entity.Category;
+import com.uth.BE.Entity.User;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -16,10 +17,11 @@ public class ProductDTO {
     private String description;
     private BigDecimal price;
     private String status;
+    private User seller;
     private Timestamp create_at;
     private List<String> imageUrls;
 
-    public ProductDTO(int productId, Category category, String title, String description, BigDecimal price, String status, List<String> imageUrls, Timestamp create_at) {
+    public ProductDTO(int productId, Category category, String title, String description, BigDecimal price, String status, List<String> imageUrls, Timestamp create_at,User seller) {
         this.productId = productId;
         this.category = category;
         this.title = title;
@@ -28,6 +30,7 @@ public class ProductDTO {
         this.status = status;
         this.imageUrls = imageUrls;
         this.create_at = create_at;
+        this.seller = seller;
     }
 
     public ProductDTO() {

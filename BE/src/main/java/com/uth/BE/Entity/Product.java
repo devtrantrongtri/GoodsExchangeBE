@@ -21,7 +21,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "seller_id", referencedColumnName = "user_id", nullable = false)
-    @JsonIgnore
+//    @JsonIgnore
     private User seller;
 
     @ManyToOne
