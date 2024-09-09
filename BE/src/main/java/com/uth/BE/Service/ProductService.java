@@ -167,6 +167,7 @@ public class ProductService implements IProductService {
 
             return new ProductDTO(
                     product.getProduct_id(),
+                    product.getCategory(),
                     product.getTitle(),
                     product.getDescription(),
                     product.getPrice(),
@@ -191,6 +192,7 @@ public class ProductService implements IProductService {
 
             return new ProductDTO(
                     product.getProduct_id(),
+                    product.getCategory(),
                     product.getTitle(),
                     product.getDescription(),
                     product.getPrice(),
@@ -215,6 +217,7 @@ public class ProductService implements IProductService {
                 // Tạo đối tượng ProductDTO và gán dữ liệu
                 ProductDTO productDTO = new ProductDTO(
                         product.getProduct_id(),
+                        product.getCategory(),
                         product.getTitle(),
                         product.getDescription(),
                         product.getPrice(),
