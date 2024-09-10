@@ -14,9 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -279,6 +278,19 @@ public class ProductService implements IProductService {
         }
     }
 
+    @Override
+    public Map<Timestamp, Long> countProductsGroupedByCreatedAt() {
+        List<Object[]> results = productRepository.countProductsGroupedByCreatedAt();
+        Map<Timestamp, Long> map = new HashMap<>();
 
+        for (Object[] result : results) {
+            Timestamp createdAt = (Timestamp) result[0];
+            Long count = ((Number) result[1]).longValue();
+            if (createdAt != null) {
+                map.put(createdAt, count);
+            }
+        }
+        return map;
+    }
 
 }

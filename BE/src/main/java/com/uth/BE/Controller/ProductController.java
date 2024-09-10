@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -386,6 +387,19 @@ public class ProductController {
             return new GlobalRes<>(HttpStatus.OK, "Product found", Optional.of(products));
         } else {
             return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", Optional.empty());
+        }
+    }
+    @GetMapping("/countByCreate")
+    public GlobalRes<Map<Timestamp, Long>> getCountProductsGroupedByCreatedAt() {
+        try {
+            Map<Timestamp, Long> counts = productService.countProductsGroupedByCreatedAt();
+            if (!counts.isEmpty()) {
+                return new GlobalRes<>(HttpStatus.OK, "Counts retrieved successfully", counts);
+            } else {
+                return new GlobalRes<>(HttpStatus.NO_CONTENT, "No products found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to retrieve counts: " + e.getMessage());
         }
     }
 }

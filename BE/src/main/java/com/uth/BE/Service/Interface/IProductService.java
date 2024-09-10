@@ -7,7 +7,9 @@ import com.uth.BE.dto.req.ProductDTO;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface IProductService {
@@ -28,4 +30,5 @@ public interface IProductService {
     Page<ProductDTO> getAllProductsWithImagesWithSortAndPaging(int pageNumber, int pageSize, String direction, String properties);
     ProductDTO getProductDetail(int productId);
     List<ProductDTO> getAllProductsByUsername(String username);
+    Map<Timestamp, Long> countProductsGroupedByCreatedAt();
 }

@@ -36,7 +36,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.title LIKE %:keyword% OR p.description LIKE %:keyword% OR p.seller.address LIKE %:keyword% ")
     Page<Product> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
-
+    @Query("SELECT p.createdAt, COUNT(p) FROM Product p GROUP BY p.createdAt")
+    List<Object[]> countProductsGroupedByCreatedAt();
 
 }
 
