@@ -1,6 +1,7 @@
 package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.User;
+import com.uth.BE.Entity.UserProfile;
 import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.Interface.*;
 import com.uth.BE.dto.req.PaginationRequest;
@@ -80,6 +81,26 @@ public class UserController {
         }
     }
 
+    @GetMapping("/usersProfile/sent-messages")
+    public GlobalRes<List<Optional<UserProfile>>> getListUserProfileSentMessage() {
+        try {
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (principal instanceof CustomUserDetails customUserDetails) {
+                Integer userId = customUserDetails.getUserId();
+                List<Optional<UserProfile>> users = userService.findAllUserProfileSent(userId);
+                if (users != null && !users.isEmpty()) {
+                    return new GlobalRes<>(HttpStatus.OK, "success", users);
+                } else {
+                    return new GlobalRes<>(HttpStatus.NO_CONTENT, "No users found");
+                }
+            } else {
+                return new GlobalRes<>(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            }
+        } catch (Exception e) {
+
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred: " + e.getMessage());
+        }
+    }
     @GetMapping("/username/{username}")
     public GlobalRes<UserDTO> getUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
