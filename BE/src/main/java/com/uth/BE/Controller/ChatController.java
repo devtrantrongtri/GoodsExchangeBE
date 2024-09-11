@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +22,11 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    private final SimpMessagingTemplate messagingTemplate;
     @Autowired
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService,SimpMessagingTemplate messagingTemplate) {
         this.chatService = chatService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @MessageMapping("/chat.{userid}")
@@ -46,4 +49,22 @@ public class ChatController {
     public List<ChatMessageDTO> getMessagesBetweenUsers(@PathVariable Integer senderId, @PathVariable Integer recipientId) {
         return chatService.getMessagesBetweenUsers(senderId, recipientId);
     }
+
+/*
+*      client : /app/sendMessage/{userid} to send
+*               /user/{userid}/queue/private to receive message
+*      server :
+* */
+    @MessageMapping("/chatwith/{recipient}")
+    public void sendMessageToUser(@DestinationVariable String recipient, @Payload String message) {
+        // Gửi tin nhắn đến người nhận cụ thể qua điểm đến `/user/{recipient}/queue/private`
+        messagingTemplate.convertAndSend( "/queue/" + recipient, message);
+    }
+
+    @MessageMapping("/sendToTopic/{channel}")
+    public void sendMessageToTopic(@DestinationVariable String channel, @Payload String message) {
+        // Gửi tin nhắn đến điểm đến /topic/{channel}
+        messagingTemplate.convertAndSend("/topic/" + channel, message);
+    }
+
 }
