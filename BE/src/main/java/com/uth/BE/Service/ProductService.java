@@ -52,11 +52,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void createProduct(Product product) {
+    public Product createProduct(Product product) {
         try {
-            productRepository.save(product);
+            Product newProduct = productRepository.save(product);
+            return newProduct;
         } catch (Exception e) {
             System.err.println("Error occurred while creating product: " + e.getMessage());
+            return null;
         }
     }
 
