@@ -1,6 +1,7 @@
 package com.uth.BE.Service.Interface;
 
 import com.uth.BE.Entity.User;
+import com.uth.BE.Entity.UserProfile;
 import com.uth.BE.dto.req.UserDTO;
 import org.springframework.data.domain.Page;
 
@@ -18,4 +19,5 @@ public interface IUserService {
     List<UserDTO> findAllUserSent(Integer userid);
     List<User> getALLUserWithSort(String field, String order);
     Page<User> getAllUsersWithPaginationAndSort(int pageNumber, int pageSize, String direction, String properties);
+    List<Optional<UserProfile>> findAllUserProfileSent(Integer userId);
 }

@@ -29,6 +29,7 @@ public class ProductImgController {
     private IProductService productService;
 
     @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
     public GlobalRes<ProductImg> createProductImg(@RequestBody ProductImgReq productImgReq) {
         ProductImg img = new ProductImg(productImgReq.getTitle(), productImgReq.getImgUrl(), productImgReq.getFileExtension());
 
@@ -44,6 +45,7 @@ public class ProductImgController {
 
         return new GlobalRes<>(HttpStatus.BAD_REQUEST, "Failed to create the product image", null);
     }
+
 
 
     @GetMapping()
@@ -137,5 +139,16 @@ public class ProductImgController {
         }
         return new GlobalRes<>(HttpStatus.OK, "Product images retrieved successfully", productImgs);
     }
+
+    @GetMapping("/find_url/{productId}")
+    public GlobalRes<List<String>> getProductImageUrls(@PathVariable int productId) {
+        List<String> imageUrls = productImgService.getUrlsProduct(productId);
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            return new GlobalRes<>(HttpStatus.OK, "Successfully retrieved image URLs", imageUrls);
+        } else {
+            return new GlobalRes<>(HttpStatus.BAD_REQUEST, "No images found for the product", null);
+        }
+    }
+
 
 }

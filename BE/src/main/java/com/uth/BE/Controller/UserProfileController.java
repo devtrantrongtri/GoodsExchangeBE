@@ -44,8 +44,8 @@ public class UserProfileController {
         }
     }
 
-    // get user profile by admin
-    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
+
+//    @PreAuthorize("hasAnyRole('ADMIN','MODERATOR')")
     @GetMapping("/{id}")
     public GlobalRes<Optional<UserProfile>> getUserProfileById(@PathVariable int id) {
         Optional<UserProfile> userProfile = userProfileService.getUserProfileById(id);
@@ -75,6 +75,7 @@ public class UserProfileController {
     }
     @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public GlobalRes<String> addUserProfile(@RequestBody UserProfile userProfile) {
         try {
             // thêm UserProfile

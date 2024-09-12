@@ -21,21 +21,23 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findBySeller(Optional<User> seller);
+    List<Product> findBySeller(User seller);
     List<Product> findByCategory(Category category);
     List<Product> findByTitleContaining(String title);
     List<Product> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
-    @Query("SELECT new com.uth.BE.dto.req.ProductDTO(p.product_id, p.title, p.description, p.price, p.status, null,p.createdAt) " +
-            "FROM Product p WHERE p.title LIKE %:keyword% OR p.description LIKE %:keyword%")
+    @Query("SELECT new com.uth.BE.dto.req.ProductDTO(p.product_id, p.category, p.title, p.description, p.price, p.status, null,p.createdAt,p.seller) " +
+            "FROM Product p WHERE p.title LIKE %:keyword% OR p.description LIKE %:keyword% OR p.seller.address LIKE %:keyword% OR p.seller.username LIKE %:keyword% ")
     List<ProductDTO> findProductsByKeyword(@Param("keyword") String keyword);
 
-    @Query("SELECT new com.uth.BE.dto.req.ProductDTO(p.product_id, p.title, p.description, p.price, p.status,null,p.createdAt) " +
+    @Query("SELECT new com.uth.BE.dto.req.ProductDTO(p.product_id, p.category, p.title, p.description, p.price, p.status,null,p.createdAt,p.seller) " +
             "FROM Product p")
     List<ProductDTO> findAllProducts();
 
-    @Query("SELECT p FROM Product p WHERE p.title LIKE %:keyword% OR p.description LIKE %:keyword%")
+    @Query("SELECT p FROM Product p WHERE p.title LIKE %:keyword% OR p.description LIKE %:keyword% OR p.seller.address LIKE %:keyword% OR p.seller.username LIKE %:keyword%")
     Page<Product> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
-
+    @Query("SELECT p.createdAt, COUNT(p) FROM Product p GROUP BY p.createdAt")
+    List<Object[]> countProductsGroupedByCreatedAt();
 
 }
 

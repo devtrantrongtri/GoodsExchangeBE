@@ -70,6 +70,24 @@ public class UserService implements IUserService {
 
         return userDTOs;
     }
+    @Override
+    public
+    List<Optional<UserProfile>> findAllUserProfileSent(Integer userId) {
+        // Lấy danh sách User từ repository
+        List<User> users = userRepository.findUsersWithMessages(userId);
+
+        // Chuyển đổi danh sách User sang UserDTO
+        List<Optional<UserProfile>> usersProfiles = new ArrayList<>();
+
+        for(User user : users) {
+            Optional<UserProfile> profile = userProfileRepository.findByUser_UserId(user.getUserId());
+            if(profile.isPresent()) {
+                usersProfiles.add(profile);
+            }
+        }
+
+        return usersProfiles;
+    }
 
 
 
