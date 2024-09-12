@@ -33,6 +33,7 @@ public class NotificationController {
 
     @PostMapping()
     @PreAuthorize("hasAnyRole('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     public GlobalRes<NotificationReq> createNotification(@RequestBody NotificationReq notificationReq) {
         Notification notification = new Notification(notificationReq.getMessage());
         Optional<User> user = userService.getUserById(notificationReq.getUserId());

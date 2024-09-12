@@ -75,6 +75,7 @@ public class UserProfileController {
     }
     @PreAuthorize("hasAnyRole('CLIENT','ADMIN','MODERATOR')")
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public GlobalRes<String> addUserProfile(@RequestBody UserProfile userProfile) {
         try {
             // thêm UserProfile

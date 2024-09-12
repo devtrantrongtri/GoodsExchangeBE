@@ -12,12 +12,10 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.core.io.Resource;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +23,9 @@ import java.util.Optional;
 public class ProductImgService implements IProductImgService {
     @Autowired
     private ProductImgRepository productImgRepo;
+
+    @Autowired
+    private StoreService storeService;
 
     @Override
     public ProductImg save(ProductImg productImg) {
@@ -60,21 +61,18 @@ public class ProductImgService implements IProductImgService {
     }
 
 
-    private final String uploadDir = "C:/Users/dell/Desktop/img";
     @Override
     public String saveProductImage(MultipartFile file, Product product) throws IOException {
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        File directory = new File(uploadDir);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
 
-        Path filePath = Paths.get(uploadDir, fileName);
-        Files.write(filePath, file.getBytes());
+        boolean isSaved = storeService.saveFile(file, fileName);
+        if (!isSaved) {
+            throw new RuntimeException("Failed to save the file");
+        }
 
         ProductImg productImg = new ProductImg();
         productImg.setTitle(fileName);
-        productImg.setImgUrl(filePath.toString());
+        productImg.setImgUrl(storeService.loadFile(fileName).getURI().getPath());
         productImg.setFileExtension(FileExtension.valueOf(fileName.substring(fileName.lastIndexOf(".") + 1).toUpperCase()));
         productImg.setProduct(product);
         productImgRepo.save(productImg);
@@ -87,16 +85,14 @@ public class ProductImgService implements IProductImgService {
         ProductImg productImg = productImgRepo.findByTitle(fileName)
                 .orElseThrow(() -> new RuntimeException("File not found"));
 
-        Path filePath = Paths.get(productImg.getImgUrl());
-        return Files.readAllBytes(filePath);
+        Resource resource = storeService.loadFile(fileName);
+        return Files.readAllBytes(resource.getFile().toPath());
     }
 
     public List<ProductImg> findProductImgWithSort(String field, String order) {
-        // Kiểm tra lại tên trường được truy xuất từ field
         if (ReflectionUtils.findField(ProductImg.class, field) == null) {
             throw new IllegalArgumentException("Invalid field name: " + field);
         }
-        // Sort theo thứ tự asc hoặc desc
         return productImgRepo.findAll(Sort.by(order.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, field));
     }
 
