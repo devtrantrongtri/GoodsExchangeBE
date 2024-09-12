@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -37,7 +38,7 @@ public class ChatMessage {
     @Enumerated(EnumType.STRING)
     @Column(name = "message_type", columnDefinition = "ENUM('TEXT', 'IMAGE', 'FILE')")
     private MessageType messageType;
-
+    @CreationTimestamp
     @Column(name = "create_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createAt;
 
