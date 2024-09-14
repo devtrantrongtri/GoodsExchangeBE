@@ -79,6 +79,7 @@ public class ChatController {
 //        messagingTemplate.convertAndSend( "/queue/" + recipient, message);
 //    }
     @MessageMapping("/chatwith/{recipient}")
+    @SendToUser
     public void sendMessageToUser(@DestinationVariable String recipient, @Payload ChatMessageReq message) {
         ChatMessage chatMessage = new ChatMessage();
             System.out.println(message);
