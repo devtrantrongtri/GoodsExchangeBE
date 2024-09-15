@@ -14,10 +14,10 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOriginPatterns( "http://localhost:5173",
                         "http://172.17.0.1:5173",
-                        "http://192.168.1.55:5173")
+                        "http://192.168.1.55:5173","ws://localhost:8080")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(false);
+                .allowCredentials(true);
     }
 }
 //
