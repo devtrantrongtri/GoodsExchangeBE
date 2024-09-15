@@ -12,10 +12,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://localhost:5173") // Sử dụng allowedOriginPatterns thay vì allowedOrigins
+                .allowedOriginPatterns( "http://localhost:5173",
+                        "http://172.17.0.1:5173",
+                        "http://192.168.1.55:5173","ws://localhost:8080")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(false);
+                .allowCredentials(true);
     }
 }
 //

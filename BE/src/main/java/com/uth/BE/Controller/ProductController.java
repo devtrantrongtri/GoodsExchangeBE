@@ -2,16 +2,22 @@ package com.uth.BE.Controller;
 
 import com.uth.BE.Entity.Category;
 import com.uth.BE.Entity.Product;
+import com.uth.BE.Entity.ProductImg;
 import com.uth.BE.Entity.User;
+import com.uth.BE.Entity.model.FileExtension;
+import com.uth.BE.Service.DriveService;
 import com.uth.BE.Service.Interface.ICategoryService;
+import com.uth.BE.Service.Interface.IProductImgService;
 import com.uth.BE.Service.Interface.IProductService;
 import com.uth.BE.Service.Interface.IUserService;
 import com.uth.BE.dto.req.PaginationRequest;
 import com.uth.BE.dto.req.ProductDTO;
+import com.uth.BE.dto.res.DriveDTO;
 import com.uth.BE.dto.res.GlobalRes;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
@@ -24,6 +30,7 @@ import java.util.Optional;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/products")
@@ -31,12 +38,16 @@ public class ProductController {
     private final IProductService productService;
     private final IUserService userService;
     private final ICategoryService categoryService;
+    private final IProductImgService productImgService;
+    private final DriveService driveService;
 
     @Autowired
-    public ProductController(IProductService productService, IUserService userService, ICategoryService categoryService) {
+    public ProductController(IProductService productService, IUserService userService, ICategoryService categoryService, IProductImgService productImgService, DriveService driveService) {
         this.productService = productService;
         this.userService = userService;
         this.categoryService = categoryService;
+        this.productImgService = productImgService;
+        this.driveService = driveService;
     }
 
     @GetMapping("/get_all_product")
@@ -58,63 +69,60 @@ public class ProductController {
         return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found", Optional.empty());
     }
 
-    @PostMapping("/create_product")
-    public ResponseEntity<GlobalRes<String>> createProduct(@RequestBody Map<String, Object> payload) {
+    @PostMapping(value = "/create_product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<GlobalRes<String>> createProduct(
+            @RequestParam("image") MultipartFile image,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("price") Double price,
+            @RequestParam("category_id") Integer categoryId,
+            @RequestParam("status") String status) {
+
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
-            Object categoryIdObj = payload.get("category_id");
-            if (!(categoryIdObj instanceof Integer)) {
-                return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id format"), HttpStatus.BAD_REQUEST);
-            }
-            Integer categoryId = (Integer) categoryIdObj;
             Optional<Category> categoryOptional = Optional.ofNullable(categoryService.findById(categoryId));
-
-            Optional<User> sellerOptional = userService.findByUsername(username);
-
-            if (sellerOptional.isPresent() && categoryOptional.isPresent()) {
-                User seller = sellerOptional.get();
-                Category category = categoryOptional.get();
-
-                Product product = new Product();
-                product.setSeller(seller);
-                product.setCategory(category);
-
-                Object titleObj = payload.get("title");
-                if (titleObj instanceof String) {
-                    product.setTitle((String) titleObj);
-                } else {
-                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid title format"), HttpStatus.BAD_REQUEST);
-                }
-
-                Object descriptionObj = payload.get("description");
-                if (descriptionObj instanceof String) {
-                    product.setDescription((String) descriptionObj);
-                } else {
-                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid description format"), HttpStatus.BAD_REQUEST);
-                }
-
-                Object priceObj = payload.get("price");
-                if (priceObj instanceof Double || priceObj instanceof Integer) {
-                    product.setPrice(BigDecimal.valueOf(((Number) priceObj).doubleValue()));
-                } else {
-                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid price format"), HttpStatus.BAD_REQUEST);
-                }
-
-                Object statusObj = payload.get("status");
-                if (statusObj instanceof String) {
-                    product.setStatus((String) statusObj);
-                } else {
-                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid status format"), HttpStatus.BAD_REQUEST);
-                }
-
-                productService.createProduct(product);
-                return new ResponseEntity<>(new GlobalRes<>(HttpStatus.CREATED, "Product created successfully"), HttpStatus.CREATED);
-            } else {
+            if (!categoryOptional.isPresent()) {
                 return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid category_id"), HttpStatus.BAD_REQUEST);
             }
 
+            Optional<User> sellerOptional = userService.findByUsername(username);
+            if (!sellerOptional.isPresent()) {
+                return new ResponseEntity<>(new GlobalRes<>(HttpStatus.BAD_REQUEST, "Invalid seller"), HttpStatus.BAD_REQUEST);
+            }
+
+            Product product = new Product();
+            product.setSeller(sellerOptional.get());
+            product.setCategory(categoryOptional.get());
+            product.setTitle(title);
+            product.setDescription(description);
+            product.setPrice(BigDecimal.valueOf(price));
+            product.setStatus(status);
+
+            Product savedProduct = productService.createProduct(product);
+
+            if (!image.isEmpty()) {
+                String originalFilename = image.getOriginalFilename();
+                String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".") + 1) : "tmp";
+
+                DriveDTO driveDTO = driveService.uploadImgToDrive(image.getInputStream(), originalFilename);
+                if (driveDTO.getStatus() == 200) {
+                    System.out.println("Drive URL: " + driveDTO.getUrl());
+
+                    ProductImg productImg = new ProductImg();
+                    productImg.setTitle("picture1");
+                    productImg.setImgUrl(driveDTO.getUrl());
+                    productImg.setFileExtension(FileExtension.valueOf(fileExtension.toUpperCase()));
+                    productImg.setProduct(savedProduct);
+
+                    productImgService.save(productImg);
+                } else {
+                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload image: " + driveDTO.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+
+            return new ResponseEntity<>(new GlobalRes<>(HttpStatus.CREATED, "Product created successfully"), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create product: " + e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }

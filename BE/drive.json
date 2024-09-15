@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "toyecommer-1725679738619",
+  "private_key_id": "25f2890714fed8175d82a0c4c6dc788248875b07",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCvosEs0x8T9+b4\n6Cmrdc5UvdtRH0cjq269kdXGCX9ar8n85QLLCZ8LWVY5GcGYf+ilIsBnL+h371RX\nrjjOX4bSK76ANtufWx/PtoVqG/gQSBQlj2y/r2RaVrqIRkWUDoSZQSFG2UYSgXzZ\npEoEx4bfXZILGyK4QWYIuWRTQZYrwl1+tc0TkND5Xp4TLTRmpsk9fXzG5tWvIWSs\nAopG+aztArzsv/rGsecrjpZiUWHJnHT5JxbbSCl6hLIaVUBbAdrxdKzpJ5ivucmN\nqWtp1++P639C1a2QRz9nVbE972+R8uuGJxMiyALV4uKCM+qnNYbf+QaWT0QFqCww\nnn9bWrnnAgMBAAECggEAG5nNF7k5yg6MKpN5cOt7eE+5tn7e1BkttvbDDHMTo3G6\noVZv4O5rIwJwDVsh1FBNhB349H5P3wEqVPkZDj1u13puXoHAc8ODNUYuoyUwD4b0\nO47VfS4X7CZy+9VnO8QoTFky3Ipqe6ADucQaqbOdW16+A6bJBwGoAjj4LilBazDG\nTPQe3AxTlizoFAi+m26Vjh9Q0ffYMrraPWRVIf3Ibp0+/6reoduOb0znibBEyhnD\nAFYmenOnZCR358+hSF7FYFYgTvqTi+2p5+sA+VuNSogEHaJTdAjrDijQnqWSA1vS\nmhxghAdT7d0YVMudXhy67DxrCUQxc8aRmXy8OIZrYQKBgQDn5EOiJ0c9zYJM+5+M\nSzurUGoNxka9k0+KC4ey2Hkm/77aUm3zWbaLOgkrmj7uRdQI4iRo4+EJ6hcav85b\npMfXjg+M6za/C484TnqF3WhHVcu/HCx8Slvm2Q0EZbiZFkoXC/L0ukTdO92ogRzB\nrtkrlGsBoawV81TJ6cb5NAG9lwKBgQDB5UEhP+BKZy52TdhPfQBbepBdfwfK46Rk\nRxSkauADK5bRJ876AoP9V5MeAlD6oIdLgA0sePP9lwsh358muz8Qwi+xFBDzunUk\nT1ejvmKdtec1zo63w6K8rU7xz4jS7idm1fNTkRt4ZRMqmITyygZ5vttd7QaKHfVK\nqVDui7QQMQKBgARAyYTF16aoiEVFMC3wi02fEfLiuhVsCD9t6rU7By3R7vwuGtol\nwRVYoSZtk83m9fabvzM1SsFVy8qvzeccZJXtgxeAkOZ8HcpYliKyZuE4D56Xs7Er\n4/ed74EvJG2aXQ2DKJeYev7bxDr88zwSKuWDuVq0TmWwqtNxODcF3ypNAoGAWnhQ\nymXWjoDUcgjifDxUFVr7z1Q9W5KaGtv7qrffbDtDdLYBYjAYS/Y3w9HK3RZX6oeG\nHhEVr2ZxoE2KIfVOeNBSlmpJep+ultGaj+F+fB3rEvUdLGtRHH41DqkKK3lJ0zbT\nAVP8oFFw/vgJWIuhN98w1gOJgJp34G1eQN/YlZECgYAGr9Au8jU2/3kFfIjIgfqq\n3OJx2QsGaNhTW9Vk1mONUAWVv5E/ffTgFVPvqNhi9V2/Frmn+sMdShs2MNVeJmtC\nhQwXs8xAPAMdpZAJNxt9ucXA9VLXxkzopcsXCw0cIlhAvwRSMWqvI1erFwP8NESx\ngBD94KGZI7h4RDpeBT0fyA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "goodsexchange@toyecommer-1725679738619.iam.gserviceaccount.com",
+  "client_id": "108402855145013459240",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/goodsexchange%40toyecommer-1725679738619.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
