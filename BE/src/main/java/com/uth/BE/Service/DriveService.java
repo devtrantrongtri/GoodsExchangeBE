@@ -43,7 +43,7 @@ public class DriveService {
             com.google.api.services.drive.model.File uploadedFile = drive.files().create(fileDrive, mediaContent)
                     .setFields("id").execute();
 
-            String imageUrl = "https://drive.google.com/thumbnail?id=" + uploadedFile.getId();
+            String imageUrl = "https://drive.google.com/thumbnail?id=" + uploadedFile.getId() + "&s=4000";
             System.out.println("Image url: " + imageUrl);
 
             dto.setStatus(200);
