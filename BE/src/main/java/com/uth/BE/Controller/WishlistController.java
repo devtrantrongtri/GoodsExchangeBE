@@ -4,6 +4,7 @@ import java.util.Collections;
 import com.uth.BE.Entity.Product;
 import com.uth.BE.Entity.User;
 import com.uth.BE.Entity.WishList;
+import com.uth.BE.Entity.model.CustomUserDetails;
 import com.uth.BE.Service.Interface.IUserService;
 import com.uth.BE.Service.Interface.IWishlistService;
 import com.uth.BE.Service.ProductService;
@@ -179,6 +180,61 @@ public class WishlistController {
         } catch (RuntimeException e) {
             System.out.println("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        }
+    }
+    @GetMapping("/getTheirWishList")
+    public ResponseEntity<List<WishList>> getWishListForUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomUserDetails) {
+            CustomUserDetails customUserDetails = (CustomUserDetails) principal;
+            Integer userId = customUserDetails.getUserId();
+            Optional<User> user = userService.getUserById(userId);
+            if (user.isPresent()) {
+                User userObj = user.get();
+                List<WishList> wishLists = wishlistService.getWishListByUser(userObj);
+                return ResponseEntity.ok(wishLists);
+            } else {
+                return ResponseEntity.status(404).build();
+            }
+
+        } else {
+            return ResponseEntity.status(403).build(); // Unauthorized
+        }
+    }
+    @DeleteMapping("/deleteWishListByProduct/{productId}")
+    public GlobalRes<String> deleteWishListByProduct(@PathVariable Integer productId) {
+        try {
+            // Lấy thông tin user từ security context
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            Optional<User> userOptional = userService.findByUsername(username);
+
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+
+                // Kiểm tra xem product có tồn tại không
+                Optional<Product> productOptional = productService.getProductById(productId);
+                if (productOptional.isPresent()) {
+                    Product product = productOptional.get();
+
+                    // Tìm wishlist của user với product_id tương ứng
+                    Optional<WishList> wishListOptional = wishlistService.findByUserAndProduct(user, product);
+
+                    if (wishListOptional.isPresent()) {
+                        // Xóa wishlist item
+                        wishlistService.deleteWishListById(wishListOptional.get().getId());
+                        return new GlobalRes<>(HttpStatus.OK, "Wish list item deleted successfully");
+                    } else {
+                        return new GlobalRes<>(HttpStatus.NOT_FOUND, "Wish list item not found for this product");
+                    }
+                } else {
+                    return new GlobalRes<>(HttpStatus.NOT_FOUND, "Product not found");
+                }
+            } else {
+                return new GlobalRes<>(HttpStatus.NOT_FOUND, "User not found");
+            }
+        } catch (Exception e) {
+            return new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to delete wish list: " + e.getMessage());
         }
     }
 

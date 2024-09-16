@@ -25,9 +25,14 @@ public interface WishlistRepository extends JpaRepository<WishList, Integer> {
 */
 package com.uth.BE.Repository;
 
+import com.uth.BE.Entity.Product;
+import com.uth.BE.Entity.User;
 import com.uth.BE.Entity.WishList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+import java.util.Optional;
 
 public interface WishlistRepository extends JpaRepository<WishList, Integer> {
+    List<WishList> findByUser(User user);
+    Optional<WishList> findByUserAndProduct(User user, Product product);
     }
