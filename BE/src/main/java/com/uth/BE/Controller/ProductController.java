@@ -71,12 +71,11 @@ public class ProductController {
 
     @PostMapping(value = "/create_product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GlobalRes<String>> createProduct(
-            @RequestParam("image") MultipartFile image,
+            @RequestParam("images") List<MultipartFile> images,
             @RequestParam("title") String title,
             @RequestParam("description") String description,
             @RequestParam("price") Double price,
-            @RequestParam("category_id") Integer categoryId,
-            @RequestParam("status") String status) {
+            @RequestParam("category_id") Integer categoryId) {
 
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -98,27 +97,29 @@ public class ProductController {
             product.setTitle(title);
             product.setDescription(description);
             product.setPrice(BigDecimal.valueOf(price));
-            product.setStatus(status);
+            product.setStatus("UNAVAILABLE");
 
             Product savedProduct = productService.createProduct(product);
 
-            if (!image.isEmpty()) {
-                String originalFilename = image.getOriginalFilename();
-                String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".") + 1) : "tmp";
+            for (MultipartFile image : images) {
+                if (!image.isEmpty()) {
+                    String originalFilename = image.getOriginalFilename();
+                    String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".") + 1) : "tmp";
 
-                DriveDTO driveDTO = driveService.uploadImgToDrive(image.getInputStream(), originalFilename);
-                if (driveDTO.getStatus() == 200) {
-                    System.out.println("Drive URL: " + driveDTO.getUrl());
+                    DriveDTO driveDTO = driveService.uploadImgToDrive(image.getInputStream(), originalFilename);
+                    if (driveDTO.getStatus() == 200) {
+                        System.out.println("Drive URL: " + driveDTO.getUrl());
 
-                    ProductImg productImg = new ProductImg();
-                    productImg.setTitle("picture1");
-                    productImg.setImgUrl(driveDTO.getUrl());
-                    productImg.setFileExtension(FileExtension.valueOf(fileExtension.toUpperCase()));
-                    productImg.setProduct(savedProduct);
+                        ProductImg productImg = new ProductImg();
+                        productImg.setTitle("picture" + (images.indexOf(image) + 1));
+                        productImg.setImgUrl(driveDTO.getUrl());
+                        productImg.setFileExtension(FileExtension.valueOf(fileExtension.toUpperCase()));
+                        productImg.setProduct(savedProduct);
 
-                    productImgService.save(productImg);
-                } else {
-                    return new ResponseEntity<>(new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload image: " + driveDTO.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+                        productImgService.save(productImg);
+                    } else {
+                        return new ResponseEntity<>(new GlobalRes<>(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload image: " + driveDTO.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
                 }
             }
 
