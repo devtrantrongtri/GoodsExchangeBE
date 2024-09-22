@@ -8,7 +8,7 @@
 
 ## Figma Design:
 
-  [CLick to view design on Figma](https://www.figma.com/design/2SKsAcz8u7xTsFJcac36Cz/GoodExchange)
+  [CLick to view design on Figma]()
 
 
 ## ERD version 1: 
