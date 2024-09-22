@@ -208,5 +208,12 @@ public class WishlistService implements IWishlistService {
 
         return sortedProducts;
     }
-
+    @Override
+    public List<WishList> getWishListByUser(User user) {
+        return wishlistRepository.findByUser(user);
+    }
+    @Override
+    public Optional<WishList> findByUserAndProduct(User user, Product product) {
+        return wishlistRepository.findByUserAndProduct(user, product);
+    }
 }
